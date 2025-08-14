@@ -1,0 +1,14 @@
+.authContainer {
+  max-width: 420px;
+  margin: 48px auto;
+  padding: 16px;
+}
+
+.authCard {
+  padding: 16px;
+}
+
+.formGap > * + * {
+  margin-top: 12px;
+  gap: 1rem;
+}
