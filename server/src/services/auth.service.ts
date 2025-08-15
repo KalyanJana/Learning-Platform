@@ -1,34 +1,52 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { UserRepository } from "../src/repositories/user.repository";
+import { userRepository } from "../repositories/user.repository";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt.util";
+import { AuthTokens } from "../types/auth.types";
 
-export class AuthService {
-  static async signup(data: { email: string; password: string }) {
-    const existingUser = await UserRepository.findByEmail(data.email);
-    if (existingUser) throw new Error("User already exists");
+class AuthService {
+  async register(email: string, password: string, name: string): Promise<AuthTokens> {
+    const existingUser = await userRepository.findByEmail(email);
+    if (existingUser) {
+      throw new Error("User already exists");
+    }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = await UserRepository.create({
-      email: data.email,
-      password: hashedPassword
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await userRepository.create({ email, password: hashedPassword, name });
 
-    return { message: "User registered", userId: user._id };
+    const accessToken = generateAccessToken(newUser.id);
+    const refreshToken = generateRefreshToken(newUser.id);
+
+    return { accessToken, refreshToken, user: newUser };
   }
 
-  static async login(data: { email: string; password: string }) {
-    const user = await UserRepository.findByEmail(data.email);
-    if (!user) throw new Error("Invalid credentials");
+  async login(email: string, password: string): Promise<AuthTokens> {
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
 
-    const match = await bcrypt.compare(data.password, user.password);
-    if (!match) throw new Error("Invalid credentials");
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error("Invalid credentials");
+    }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
-    );
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
 
-    return { token, user: { id: user._id, email: user.email } };
+    return { accessToken, refreshToken, user };
+  }
+
+  async refreshTokens(token: string): Promise<Omit<AuthTokens, "user">> {
+    const payload = verifyRefreshToken(token);
+    if (!payload) {
+      throw new Error("Invalid or expired refresh token");
+    }
+
+    const accessToken = generateAccessToken(payload.userId);
+    const refreshToken = generateRefreshToken(payload.userId);
+
+    return { accessToken, refreshToken };
   }
 }
+
+export const authService = new AuthService();
