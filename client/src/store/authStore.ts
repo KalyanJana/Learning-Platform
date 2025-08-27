@@ -1,7 +1,17 @@
 // src/store/authStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { AuthTokens, AuthUser } from "../types/auth";
+
+interface AuthTokens {
+  accessToken: string;
+  refreshToken?: string;
+}
+
+interface AuthUser {
+  id: string;
+  email: string;
+  username?: string;
+}
 
 interface AuthState {
   user: AuthUser | null;
@@ -12,6 +22,7 @@ interface AuthState {
   setTokens: (tokens: AuthTokens) => void;
   logout: () => void;
 }
+
 
 export const useAuthStore = create<AuthState>()(
   persist(

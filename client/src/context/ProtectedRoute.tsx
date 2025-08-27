@@ -1,7 +1,7 @@
 // src/routes/ProtectedRoute.tsx
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 interface JwtPayload {
   exp: number; // Expiration time in seconds
