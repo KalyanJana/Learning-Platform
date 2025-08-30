@@ -1,14 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-export async function connectDB() {
-  try {
-    const uri = process.env.MONGO_URI as string;
-    if (!uri) throw new Error("MONGO_URI missing");
-    await mongoose.connect(uri,  {dbName: "learningPlatform",});
-    console.log("✅ MongoDB Connected");
-  } catch (err) {
-    console.error("❌ MongoDB connection failed", err);
-    process.exit(1);
-  }
+export const connectDB = async () => {
+    const MONGO_URI = process.env.MONGO_URI || "your_mongo_uri";
+    try{
+        await mongoose.connect(MONGO_URI, {dbName: "learningPlatform"});
+        console.log("MongoDB connected successfully!");
+    }catch(error){
+        console.log("MongoDB connection error", error);
+        process.exit(1);
+    }
+
 }
-

@@ -1,11 +1,6 @@
 // src/store/authStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-interface AuthTokens {
-  accessToken: string;
-  refreshToken?: string;
-}
+import { devtools } from "zustand/middleware";
 
 interface AuthUser {
   id: string;
@@ -16,47 +11,40 @@ interface AuthUser {
 interface AuthState {
   user: AuthUser | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
+  setAccessToken: (token: string | null) => void;
   setUser: (user: AuthUser | null) => void;
-  setTokens: (tokens: AuthTokens) => void;
+  login: (token: string, user: AuthUser) => void;
   logout: () => void;
 }
 
+export const useAuthStore = create<AuthState>(
+  devtools((set) => ({
+    user: null,
+    accessToken: null,
+    isAuthenticated: false,
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      accessToken: null,
-      refreshToken: null,
-      isAuthenticated: false,
+    setUser: (user) => set({ user }),
 
-      setUser: (user) => set({ user }),
-
-      setTokens: (tokens) =>
-        set({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken,
-          isAuthenticated: true,
-        }),
-
-      logout: () =>
-        set({
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-        }),
-    }),
-    {
-      name: "auth-storage", // key in localStorage
-      partialize: (state) => ({
-        user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
-        isAuthenticated: state.isAuthenticated,
+    setAccessToken: (token) =>
+      set({
+        accessToken: token,
+        isAuthenticated: !!token,
       }),
-    }
-  )
+
+    login: (accessToken, user) => {
+      set({
+        accessToken,
+        user,
+        isAuthenticated: true,
+      });
+    },
+
+    logout: () =>
+      set({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false,
+      }),
+  }), { name: "AuthStore" })
 );

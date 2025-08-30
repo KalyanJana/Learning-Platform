@@ -8,25 +8,38 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/"); //redirect to home or login page
   };
 
   return (
     <AppBar position="static" color="primary">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography component={Link} to="/" variant="h6" sx={{ color: "inherit", textDecoration: "none" }}>
+        <Typography
+          component={Link}
+          to="/"
+          variant="h6"
+          sx={{ color: "inherit", textDecoration: "none" }}
+        >
           LearnX
         </Typography>
         <Box>
           {user ? (
             <>
-              <Typography component="span" sx={{ mr: 2 }}>{user.email}</Typography>
-              <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              <Typography component="span" sx={{ mr: 2 }}>
+                {user.email}
+              </Typography>
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
             </>
           ) : (
             <>
-              <Button color="inherit" component={Link} to="/login">Login</Button>
-              <Button color="inherit" component={Link} to="/signup">Sign Up</Button>
+              <Button color="inherit" component={Link} to="/">
+                Login
+              </Button>
+              <Button color="inherit" component={Link} to="/signup">
+                Sign Up
+              </Button>
             </>
           )}
         </Box>

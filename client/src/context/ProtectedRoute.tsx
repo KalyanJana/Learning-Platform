@@ -12,27 +12,28 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated, tokens, logout } = useAuthStore();
+  const { isAuthenticated, accessToken, logout } = useAuthStore();
 
   // If not authenticated, redirect to login
-  if (!isAuthenticated || !tokens?.accessToken) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated || !accessToken) {
+    return <Navigate to="/" replace />;
   }
 
   // Decode token to check expiration
   try {
-    const decoded = jwtDecode<JwtPayload>(tokens.accessToken);
+    const decoded = jwtDecode<JwtPayload>(accessToken);
     const now = Date.now() / 1000; // Current time in seconds
 
     if (decoded.exp < now) {
       // Token expired -> logout & redirect
+      console.log("calling log out", decoded.exp, now);
       logout();
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/" replace />;
     }
   } catch (error) {
     console.error("Invalid access token", error);
     logout();
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // All good, render protected content
