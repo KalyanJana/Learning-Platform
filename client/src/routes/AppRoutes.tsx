@@ -3,12 +3,12 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/Auth/LoginPage";
 import SignupPage from "../pages/Auth/SignupPage";
-import DashboardPage from "../pages/Dashboard/DashboardPage";
-import CourseDetailPage from "../pages/Courses/CourseDetailPage";
+import CoursePage from "../pages/Courses/CoursePage";
 import PurchasePage from "../pages/Courses/PurchasePage";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../context/ProtectedRoute";
 import { useAuthStore } from "../store/authStore";
+import CourseDetails from "../pages/Courses/CourseDetails";
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -19,31 +19,31 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/"
         element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
+          isAuthenticated ? <Navigate to="/courses" replace /> : <LoginPage />
         }
       />
       <Route
         path="/signup"
         element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <SignupPage />
+          isAuthenticated ? <Navigate to="/courses" replace /> : <SignupPage />
         }
       />
 
       {/* Protected Routes */}
       <Route
-        path="/dashboard"
+        path="/courses"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <CoursePage />
           </ProtectedRoute>
         }
       />
       <Route
         path="/courses/:courseId"
         element={
-          <ProtectedRoute>
-            <CourseDetailPage />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+            <CourseDetails />
+          // </ProtectedRoute>
         }
       />
       <Route
