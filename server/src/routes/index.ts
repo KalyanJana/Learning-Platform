@@ -1,8 +1,10 @@
-import {Router} from 'express';
-import userRoutes from './user.routes';
+import express from 'express';
+import userRouters from './user';
+import paymentRoutes from './payment';
 
-const router = Router();
+const router = express.Router();
 
-router.use("/v1", userRoutes)
+router.use("/users", userRouters);
+router.use("/payment", paymentRoutes);
 
 export default router;

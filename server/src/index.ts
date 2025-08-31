@@ -1,9 +1,15 @@
 import express, { Application, Request, Response } from "express";
 import { connectDB } from "./config/db";
-import userRoutes from "./routes/index";
+import routes from "./routes/index";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import Razorpay from "razorpay";
+import bodyParser from "body-parser";
+
+interface CreateOrderRequest {
+  amount: number; // in paise
+}
 
 // Load environment variables
 dotenv.config();
@@ -16,6 +22,7 @@ const port: number = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 // Enable CORS with credentials and restrict origin if needed
 app.use(
@@ -26,8 +33,13 @@ app.use(
   })
 );
 
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID, // Replace with your Razorpay Key ID
+  key_secret: process.env.RAZORPAY_KEY_SECRET, // Replace with your Razorpay Key Secret
+});
+
 // Register routes
-app.use("/api/users", userRoutes);
+app.use("/api", routes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");

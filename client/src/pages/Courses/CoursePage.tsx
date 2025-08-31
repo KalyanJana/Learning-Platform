@@ -46,8 +46,7 @@ const CoursePage: React.FC = () => {
       id: 2,
       title: "TypeScript Mastery",
       lessons: 8,
-      bannerUrl:
-        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80",
+      bannerUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80",
       isEnrolled: true,
     },
   ];
@@ -58,8 +57,7 @@ const CoursePage: React.FC = () => {
       id: 3,
       title: "Node.js Fundamentals",
       lessons: 15,
-      bannerUrl:
-        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
+      bannerUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
       price: "$49.99",
     },
     {

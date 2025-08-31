@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Typography, Button, Box } from "@mui/material";
 import styles from "./PurchasePage.module.scss";
+import RazorpayPaymentButton  from "../../components/ui/RazorpayPaymentButton"
 
 const PurchasePage: React.FC = () => {
   const { courseId } = useParams();
@@ -9,8 +10,13 @@ const PurchasePage: React.FC = () => {
 
   const handlePayment = () => {
     alert("Payment Successful!");
-    navigate("/dashboard");
+    navigate("/");
   };
+
+  const coursePrice = "24.42";
+  const orderId = "order123";
+
+  const upiLink = `upi://pay?pa=merchantvpa@bank&pn=MyShop&tn=Order%20${orderId}&am=${coursePrice}&cu=INR`;
 
   return (
     <Container className={styles.purchase}>
@@ -21,9 +27,7 @@ const PurchasePage: React.FC = () => {
         Please proceed with payment to access this course.
       </Typography>
       <Box mt={2}>
-        <Button variant="contained" color="primary" onClick={handlePayment}>
-          Pay Now
-        </Button>
+       <RazorpayPaymentButton amount={coursePrice} />
       </Box>
     </Container>
   );

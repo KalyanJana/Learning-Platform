@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
 
       login(accessToken, user);
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (error: any) {
       alert(error?.response?.data?.error || "Invalid credentials");
     }

@@ -35,11 +35,12 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
   onSelectLesson,
   selectedLessonId,
 }) => {
+  console.log("sections", sections);
   const [expanded, setExpanded] = useState<number | false>(false);
   const [selectedId, setSelectedId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    if (!selectedLessonId && sections.length > 0) {
+    if (!selectedLessonId && sections?.length > 0) {
       setExpanded(sections[0].id);
       if (sections[0].lessons.length > 0) {
         setSelectedId(sections[0].lessons[0].id);
@@ -58,30 +59,47 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
   };
 
   return (
-    <Box>
-      {sections.map((section) => (
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {sections?.map((section) => (
         <Accordion
           key={section.id}
           expanded={expanded === section.id}
           onChange={handleChange(section.id)}
           sx={{
+            flex: "1 1 auto",
+            width: "100%", // 🔑 Force full width of Grid column
+            alignSelf: "stretch", // 🔑 Ensure it stretches inside flex
             mb: 0,
-            borderBottom: 0,
-            "&:before": { display: "none" }, // removes accordion's default top border
+            "&:before": { display: "none" },
           }}
           square
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            sx={{
+              width: "100%",
+              "& .MuiAccordionSummary-content": {
+                flexGrow: 1,
+                width: "100%",
+              },
+            }}
+          >
             <Typography fontWeight="bold">{section.title}</Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ p: 0 }}>
-            <List component="nav" disablePadding>
+          <AccordionDetails sx={{ p: 0, width: "100%" }}>
+            <List component="nav" disablePadding sx={{ width: "100%" }}>
               {section.lessons.map((lesson) => (
                 <ListItemButton
                   key={lesson.id}
                   selected={lesson.id === (selectedLessonId ?? selectedId)}
                   onClick={() => handleClickLesson(lesson)}
-                  sx={{ pl: 3 }}
+                  sx={{ pl: 3, width: "100%" }}
                 >
                   <ListItemText
                     primary={lesson.title}
