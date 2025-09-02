@@ -6,10 +6,9 @@ const userService = new UserService();
 const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",   // Lowercase string literal, as required by CookieOptions
+  sameSite: "strict", // Lowercase string literal, as required by CookieOptions
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 };
-
 
 const sendToken = (
   res: Response,
@@ -22,7 +21,7 @@ const sendToken = (
   return res.json({
     accessToken,
     user: {
-      id: user._id,
+      _id: user._id,
       email: user.email,
       username: user.username,
     },
@@ -31,7 +30,6 @@ const sendToken = (
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    console.log("calling register..");
     const { user, accessToken, refreshToken } = await userService.registerUser(
       req.body
     );
@@ -52,7 +50,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshAccessToken = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken)
     return res.status(401).json({ error: "Refresh token missing" });
@@ -79,5 +77,25 @@ export const logoutUser = async (req: Request, res: Response) => {
     res.json({ message: "User logged out successfully" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserProfile = async (req: Request, res: Response) => {
+  try {
+    // Assume req.user is populated by auth middleware and contains user id
+    const userId = (req.user as { _id: string })?._id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    console.log("userId", userId)
+    const userProfile = await userService.fetchUserProfile(userId);
+    console.log("user profile", userProfile)
+
+    res.json(userProfile);
+  } catch (error: any) {
+    res
+      .status(404)
+      .json({ error: error.message || "Failed to fetch user profile" });
   }
 };

@@ -41,17 +41,17 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/courses/:courseId"
         element={
-          // <ProtectedRoute>
+          <ProtectedRoute>
             <CourseDetails />
-          // </ProtectedRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/courses/:courseId/buy"
         element={
-          // <ProtectedRoute>
+          <ProtectedRoute>
             <PurchasePage />
-          // </ProtectedRoute>
+          </ProtectedRoute>
         }
       />
 

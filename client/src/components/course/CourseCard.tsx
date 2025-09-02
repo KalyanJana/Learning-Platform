@@ -18,6 +18,7 @@ interface CourseCardProps {
   lessons: number;
   price?: string;
   isEnrolled?: boolean;
+  _id: string;
 }
 
 const HoverCard = styled(Card)(({ theme }) => ({
@@ -34,12 +35,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
   lessons,
   price,
   isEnrolled = false,
-  id,
+  _id,
 }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/courses/${id}`);
+    navigate(`/courses/${_id}`);
   };
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("sm")

@@ -22,6 +22,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   // Decode token to check expiration
   try {
     const decoded = jwtDecode<JwtPayload>(accessToken);
+    
     const now = Date.now() / 1000; // Current time in seconds
 
     if (decoded.exp < now) {

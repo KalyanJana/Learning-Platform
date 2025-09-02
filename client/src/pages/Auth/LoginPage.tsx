@@ -1,5 +1,5 @@
 // src/pages/Auth/LoginPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import { TextField, Button, Box } from "@mui/material";
@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = useAuthStore((state) => state.login);
+  const { login } = useAuthStore((state) => state);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

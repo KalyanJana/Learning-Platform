@@ -35,7 +35,7 @@ const CoursePage: React.FC = () => {
   // Mimic fetched API data for enrolled courses
   const enrolledCourses: Course[] = [
     {
-      id: 1,
+      _id: 1,
       title: "React Basics",
       lessons: 10,
       bannerUrl:
@@ -43,7 +43,7 @@ const CoursePage: React.FC = () => {
       isEnrolled: true,
     },
     {
-      id: 2,
+      _id: 2,
       title: "TypeScript Mastery",
       lessons: 8,
       bannerUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80",
@@ -54,14 +54,14 @@ const CoursePage: React.FC = () => {
   // Mimic fetched API data for available courses
   const availableCourses: Course[] = [
     {
-      id: 3,
+      _id: 3,
       title: "Node.js Fundamentals",
       lessons: 15,
       bannerUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
       price: "$49.99",
     },
     {
-      id: 4,
+      _id: 4,
       title: "Advanced CSS Techniques",
       lessons: 12,
       bannerUrl:
@@ -69,7 +69,7 @@ const CoursePage: React.FC = () => {
       price: "$39.99",
     },
     {
-      id: 5,
+      _id: 5,
       title: "Fullstack Development",
       lessons: 25,
       bannerUrl:
@@ -77,7 +77,7 @@ const CoursePage: React.FC = () => {
       price: "$99.99",
     },
     {
-      id: 6,
+      _id: 6,
       title: "React Development",
       lessons: 25,
       bannerUrl:
@@ -85,7 +85,7 @@ const CoursePage: React.FC = () => {
       price: "$99.99",
     },
     {
-      id: 5,
+      _id: 5,
       title: "TypeScript Development",
       lessons: 25,
       bannerUrl:
@@ -105,7 +105,7 @@ const CoursePage: React.FC = () => {
           Your Enrolled Courses
         </Typography>
         {enrolledCourses.map((course) => (
-          <Box key={course.id} sx={{ mb: 2 }}>
+          <Box key={course._id} sx={{ mb: 2 }}>
             <CourseCard {...course} />
           </Box>
         ))}

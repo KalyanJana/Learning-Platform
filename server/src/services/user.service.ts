@@ -53,22 +53,22 @@ export class UserService {
       password: userData.password,
     });
 
-    const userWithId = user as IUser & { _id: any };
-    const userId = userWithId._id.toString();
+    // const userWithId = user as IUser & { _id: any };
+    // const userId = userWithId._id.toString();
 
     const accessToken = signToken(
-      { userId, username: user.username, email: user.email },
+      { _id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );
 
     const refreshToken = signToken(
-      { userId, username: user.username, email: user.email },
+      { _id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     );
 
-    await this.userRepository.addRefreshToken(userId, refreshToken);
+    await this.userRepository.addRefreshToken(user._id, refreshToken);
 
     return { user, accessToken, refreshToken };
   }
@@ -91,24 +91,24 @@ export class UserService {
       throw new Error("Invalid credentials");
     }
 
-    const userWithId = user as IUser & { _id: any };
-    const userId = userWithId._id.toString();
+    // const userWithId = user as IUser & { _id: any };
+    // const userId = userWithId._id.toString();
 
-    console.log("user id", userId)
+    // console.log("user id", userId)
 
     const accessToken = signToken(
-      { userId, username: user.username, email: user.email },
+      { _id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );
 
     const refreshToken = signToken(
-      { userId, username: user.username, email: user.email },
+      { _id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     );
 
-    await this.userRepository.addRefreshToken(userId, refreshToken);
+    await this.userRepository.addRefreshToken(user._id, refreshToken);
 
     return { user, accessToken, refreshToken };
   }
@@ -121,27 +121,37 @@ export class UserService {
         refreshToken,
         JWT_SECRET
       ) as unknown as JWTPayload;
-      const user = await this.userRepository.findById(decoded.userId);
+
+      const user = await this.userRepository.findByUserId(decoded._id);
       if (!user) {
         throw new Error("User not found");
       }
 
-      const userWithId = user as IUser & { _id: any };
-      const userId = userWithId._id.toString();
-
       const newAccessToken = signToken(
-        { userId, username: user.username, email: user.email },
+        { _id: user._id, username: user.username, email: user.email },
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES_IN }
       );
 
-      return { accessToken: newAccessToken };
+      return newAccessToken;
     } catch (error) {
       throw new Error("Invalid or expired refresh token");
     }
   }
 
-  async logoutUser(userId: string, refreshToken: string): Promise<void> {
-    await this.userRepository.removeRefreshToken(userId, refreshToken);
+  async logoutUser(_id: string, refreshToken: string): Promise<void> {
+    await this.userRepository.removeRefreshToken(_id, refreshToken);
+  }
+
+  async fetchUserProfile(_id: string) {
+    const user = await this.userRepository.findByUserId(_id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return {
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+    };
   }
 }

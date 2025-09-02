@@ -12,14 +12,14 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface LessonItem {
-  id: number;
+  _id: number;
   title: string;
   type: "video" | "pdf";
   url: string;
 }
 
 export interface Section {
-  id: number;
+  _id: number;
   title: string;
   lessons: LessonItem[];
 }
@@ -41,9 +41,9 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
 
   useEffect(() => {
     if (!selectedLessonId && sections?.length > 0) {
-      setExpanded(sections[0].id);
+      setExpanded(sections[0]._id);
       if (sections[0].lessons.length > 0) {
-        setSelectedId(sections[0].lessons[0].id);
+        setSelectedId(sections[0].lessons[0]._id);
         onSelectLesson(sections[0].lessons[0]);
       }
     }
@@ -54,7 +54,7 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
   };
 
   const handleClickLesson = (lesson: LessonItem) => {
-    setSelectedId(lesson.id);
+    setSelectedId(lesson._id);
     onSelectLesson(lesson);
   };
 
@@ -68,9 +68,9 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
     >
       {sections?.map((section) => (
         <Accordion
-          key={section.id}
-          expanded={expanded === section.id}
-          onChange={handleChange(section.id)}
+          key={section._id}
+          expanded={expanded === section._id}
+          onChange={handleChange(section._id)}
           sx={{
             flex: "1 1 auto",
             width: "100%", // 🔑 Force full width of Grid column
@@ -96,8 +96,8 @@ const ContentSlider: React.FC<ContentSliderProps> = ({
             <List component="nav" disablePadding sx={{ width: "100%" }}>
               {section.lessons.map((lesson) => (
                 <ListItemButton
-                  key={lesson.id}
-                  selected={lesson.id === (selectedLessonId ?? selectedId)}
+                  key={lesson._id}
+                  selected={lesson._id === (selectedLessonId ?? selectedId)}
                   onClick={() => handleClickLesson(lesson)}
                   sx={{ pl: 3, width: "100%" }}
                 >

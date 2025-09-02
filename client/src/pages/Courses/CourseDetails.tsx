@@ -8,7 +8,7 @@ import ContentTabs from "../../components/course/ContentTabs";
 import PricingSectionCard from "../../components/course/PricingSelectionCard";
 
 export interface Course {
-  id: string;
+  _id: string;
   title: string;
   sections: Section[];
   bannerUrl: string;
@@ -17,7 +17,7 @@ export interface Course {
 }
 
 export interface Section {
-  id: number;
+  _id: number;
   title: string;
   description: string;
   duration: string;
@@ -25,30 +25,30 @@ export interface Section {
 }
 
 export interface LessonItem {
-  id: string;
+  _id: string;
   title: string;
   type: "video" | "pdf";
   url: string;
 }
 
 const course: Course[] = {
-  id: 1,
+  _id: 1,
   title: "Introduction",
   sections: [
     {
-      id: 1,
+      _id: 1,
       title: "Introduction to Node.js",
       description: "Learn the basics of Node.js",
       duration: "2 hours",
       lessons: [
         {
-          id: 101,
+          _id: 101,
           title: "Welcome",
           type: "video",
           url: "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
         },
         {
-          id: 102,
+          _id: 102,
           title: "Setup PDF",
           type: "pdf",
           url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
@@ -56,19 +56,19 @@ const course: Course[] = {
       ],
     },
     {
-      id: 2,
+      _id: 2,
       title: "Advanced Topics",
       description: "Dive deeper into Node.js",
       duration: "3 hours",
       lessons: [
         {
-          id: 201,
+          _id: 201,
           title: "Asynchronous Programming",
           type: "video",
           url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",
         },
         {
-          id: 202,
+          _id: 202,
           title: "Error Handling PDF",
           type: "pdf",
           url: "https://www.adobe.com/support/products/enterprise/knowledgecenter/media/c4611_sample_explain.pdf",
@@ -76,19 +76,19 @@ const course: Course[] = {
       ],
     },
     {
-      id: 3,
+      _id: 3,
       title: "Expert Insights",
       description: "Gain insights from industry experts",
       duration: "4 hours",
       lessons: [
         {
-          id: 301,
+          _id: 301,
           title: "Interview with an Expert",
           type: "video",
           url: "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
         },
         {
-          id: 302,
+          _id: 302,
           title: "Case Study PDF",
           type: "pdf",
           url: "https://www.adobe.com/support/products/enterprise/knowledgecenter/media/c4611_sample_explain.pdf",
@@ -96,19 +96,19 @@ const course: Course[] = {
       ],
     },
     {
-      id: 4,
+      _id: 4,
       title: "Conclusion",
       description: "Wrap up the course",
       duration: "1 hour",
       lessons: [
         {
-          id: 401,
+          _id: 401,
           title: "Wrapping Up Video",
           type: "video",
           url: "https://samplelib.com/lib/preview/mp4/sample-20s.mp4",
         },
         {
-          id: 402,
+          _id: 402,
           title: "Final Thoughts PDF",
           type: "pdf",
           url: "https://www.adobe.com/support/products/enterprise/knowledgecenter/media/c4611_sample_explain.pdf",
@@ -118,7 +118,7 @@ const course: Course[] = {
   ],
   bannerUrl:
     "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80",
-  isEnrolled: false,
+  isEnrolled: true,
   price: "$24.42",
 };
 
@@ -139,7 +139,7 @@ const CourseDetails: React.FC = () => {
   const courseContentTab = isMobile ? (
     <ContentSlider
       sections={course.sections}
-      selectedLessonId={selectedLesson?.id}
+      selectedLessonId={selectedLesson?._id}
       onSelectLesson={setSelectedLesson}
     />
   ) : null;
@@ -172,7 +172,7 @@ const CourseDetails: React.FC = () => {
             <Box sx={{ flex: 1, width: "100%" }}>
               <ContentSlider
                 sections={course.sections}
-                selectedLessonId={selectedLesson?.id}
+                selectedLessonId={selectedLesson?._id}
                 onSelectLesson={setSelectedLesson}
               />
             </Box>
