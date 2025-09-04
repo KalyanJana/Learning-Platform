@@ -3,6 +3,7 @@ import { IUser } from "../models/user.modal";
 import { UserRepository } from "../repositories/user.repositories";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {notifyUserLogout} from "../index";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super_secret_key_123";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
@@ -53,9 +54,6 @@ export class UserService {
       password: userData.password,
     });
 
-    // const userWithId = user as IUser & { _id: any };
-    // const userId = userWithId._id.toString();
-
     const accessToken = signToken(
       { _id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
@@ -83,18 +81,18 @@ export class UserService {
       throw new Error("User not found");
     }
 
+    notifyUserLogout(user._id.toString()).catch((err) =>
+      console.error("notifyUserLogout error:", err)
+    );
+
     const passwordMatch = await bcrypt.compare(
       credentials.password,
       user.password
     );
+
     if (!passwordMatch) {
       throw new Error("Invalid credentials");
     }
-
-    // const userWithId = user as IUser & { _id: any };
-    // const userId = userWithId._id.toString();
-
-    // console.log("user id", userId)
 
     const accessToken = signToken(
       { _id: user._id, username: user.username, email: user.email },
@@ -108,8 +106,9 @@ export class UserService {
       { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
     );
 
+    console.log("All tokens created")
     await this.userRepository.addRefreshToken(user._id, refreshToken);
-
+    console.log("refreshtoken added into db")
     return { user, accessToken, refreshToken };
   }
 

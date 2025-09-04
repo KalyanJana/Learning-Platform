@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import Razorpay from "razorpay";
 import bodyParser from "body-parser";
+import http from "http";
+import { setupSocketServer } from "./socket";
 
 interface CreateOrderRequest {
   amount: number; // in paise
@@ -27,7 +29,7 @@ app.use(bodyParser.json());
 // Enable CORS with credentials and restrict origin if needed
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend URL (adjust accordingly)
+    origin: process.env.FRONTEND_URL, // your frontend URL (adjust accordingly)
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -45,7 +47,15 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });
 
-app.listen(port, () => {
+// Create HTTP server and integrate Socket.IO
+const server = http.createServer(app);
+
+const { io, notifyUserLogout } = setupSocketServer(server);
+
+// Export notifyUserLogout to use in login controller
+export { notifyUserLogout };
+
+server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   connectDB();
 });

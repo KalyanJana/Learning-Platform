@@ -14,7 +14,7 @@ const router = Router();
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/token/refresh", refreshAccessToken);
-router.post("/logout", logoutUser);
+router.post("/logout", authenticateRefreshToken, logoutUser);
 router.get("/profile", authenticateRefreshToken, getUserProfile);
 
 router.get("/working", (req, res) => {

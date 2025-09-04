@@ -44,7 +44,10 @@ export const loginUser = async (req: Request, res: Response) => {
     const { accessToken, refreshToken, user } = await userService.loginUser(
       req.body
     );
+    console.log("user", user);
+
     sendToken(res, accessToken, refreshToken, user);
+
   } catch (error: any) {
     res.status(401).json({ error: error.message });
   }
@@ -65,13 +68,16 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
+    console.log("calling loout handler...")
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       return res.status(400).json({ error: "Refresh token is missing" });
     }
 
-    const username = req.body.username;
-    await userService.logoutUser(username, refreshToken);
+    const userId = req.user._id;
+    console.log("userId", userId);
+    await userService.logoutUser(userId, refreshToken);
+    console.log("User logged out successfully");
 
     res.clearCookie("refreshToken", cookieOptions);
     res.json({ message: "User logged out successfully" });
@@ -88,9 +94,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    console.log("userId", userId)
     const userProfile = await userService.fetchUserProfile(userId);
-    console.log("user profile", userProfile)
 
     res.json(userProfile);
   } catch (error: any) {

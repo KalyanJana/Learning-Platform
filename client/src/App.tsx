@@ -1,18 +1,20 @@
+import { useState, useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
 import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./components/Layout/Navbar";
 import Footer from "./components/Layout/Footer";
 import Spinner from './components/ui/Spinner'
-import { useState, useEffect } from "react";
-import { useAuthStore } from "./store/authStore";
 import apiClient from "./utils/apiClient";
-import { set } from "react-hook-form";
+import useSocket from "./hooks/useSocket";
 
 export default function App() {
-  const {isAuthenticated, login} = useAuthStore((state) => state);
+  const {isAuthenticated, login, user} = useAuthStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
 
+  useSocket(user?._id ?? null);
+
   const refreshAccessToken = async () => {
-    try{
+    try {
       const tokenResponse = await apiClient.post("users/v1/token/refresh");
 
       const userResponse = await apiClient.get("users/v1/profile");

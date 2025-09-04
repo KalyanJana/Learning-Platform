@@ -18,7 +18,7 @@ export class UserRepository {
     return await User.findById(id);
   }
 
- async addRefreshToken(userId: string, token: string): Promise<void> {
+  async addRefreshToken(userId: string, token: string): Promise<void> {
     await User.findByIdAndUpdate(userId, { $push: { refreshTokens: token } });
   }
 
