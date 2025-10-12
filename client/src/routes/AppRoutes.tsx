@@ -9,12 +9,14 @@ import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../context/ProtectedRoute";
 import { useAuthStore } from "../store/authStore";
 import CourseDetails from "../pages/Courses/CourseDetails";
+import AdminPanel from "../pages/Admin/AdminPannel";
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <Routes>
+      
       {/* Public Routes */}
       <Route
         path="/"
@@ -51,6 +53,15 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <PurchasePage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/upload"
+        element={
+          <ProtectedRoute>
+            <AdminPanel />
           </ProtectedRoute>
         }
       />

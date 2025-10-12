@@ -37,6 +37,10 @@ const CourseCard: React.FC<CourseCardProps> = ({
   isEnrolled = false,
   _id,
 }) => {
+  console.log("banner URL", bannerUrl)
+  console.log("banner title", title)
+  console.log("banner lessons", lessons)
+  console.log("banner price", price)
   const navigate = useNavigate();
 
   const handleClick = () => {

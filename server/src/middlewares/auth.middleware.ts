@@ -7,6 +7,13 @@ export interface AuthRequest extends Request {
   user?: { _id: string; username: string; email: string };
 }
 
+export interface AuthRequestWithRefresh extends AuthRequest {
+  cookies?: {
+    refreshToken?: string;
+    [key: string]: string | undefined; // allow other cookies if present
+  };
+}
+
 export const authenticateAccessToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   console.log("Authenticating user...");
   const authHeader = req.headers["authorization"];

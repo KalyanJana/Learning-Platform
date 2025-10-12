@@ -6,6 +6,7 @@ interface AuthUser {
   id: string;
   email: string;
   username?: string;
+  role?: "admin" | "user";  // add role for admin check
 }
 
 interface AuthState {

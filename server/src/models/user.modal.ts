@@ -6,14 +6,17 @@ export interface IUser extends Document {
     email: string;
     password: string; // hashed password
     refreshTokens: string[]; //store active refresh tokens
+    role: string;
 }
 
 const userSchema = new Schema<IUser>({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    refreshTokens: { type: [String], default: [] }, 
-},{ timestamps: true });
+    refreshTokens: { type: [String], default: [] },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+    // enrolledUsers: [{ type: Types.ObjectId, ref: "User", default: [] }],
+}, { timestamps: true });
 
 userSchema.pre<IUser>("save", async function (next){
     if (!this.isModified("password")) return next(); //if password is not modified skip hashing

@@ -8,7 +8,8 @@
   padding: 16px;
 }
 
-.formGap > * + * {
-  margin-top: 12px;
-  gap: 1rem;
+.formGap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }

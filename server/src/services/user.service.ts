@@ -6,8 +6,8 @@ import jwt from "jsonwebtoken";
 import {notifyUserLogout} from "../index";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super_secret_key_123";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
-const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || "1h";
 
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is not defined");
@@ -151,6 +151,7 @@ export class UserService {
       _id: user._id,
       email: user.email,
       username: user.username,
+      role: user.role,
     };
   }
 }

@@ -32,6 +32,12 @@ export default function Navbar() {
         <Box>
           {user ? (
             <>
+              {user.role === "admin" && <Button color="inherit" component={Link} to="/admin/upload">
+                upload
+              </Button>}
+              <Button color="inherit" component={Link} to="/courses">
+                courses
+              </Button>
               <Typography component="span" sx={{ mr: 2 }}>
                 {user.email}
               </Typography>
