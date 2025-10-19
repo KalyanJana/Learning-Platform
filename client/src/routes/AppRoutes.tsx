@@ -10,15 +10,25 @@ import ProtectedRoute from "../context/ProtectedRoute";
 import { useAuthStore } from "../store/authStore";
 import CourseDetails from "../pages/Courses/CourseDetails";
 import AdminPanel from "../pages/Admin/AdminPannel";
+import MainLayout from "../layouts/MainLayout";
+import AdminLayout from "../layouts/Adminlayout";
+import StudentLayout from "../layouts/StudentLayout";
+import AdminRoutes from "../features/admin/routes/adminRoutes";
+import StudentRoutes from "../features/student/routes/studentRoutes";
+import HomePage from "../features/home/pages/HomePage";
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <Routes>
+      <Route path="/" element={<MainLayout><HomePage/></MainLayout>} />
+      <Route path="/admin/*" element={<AdminLayout><AdminRoutes/></AdminLayout>} />
+      <Route path="/student/*" element={<StudentLayout><StudentRoutes/></StudentLayout>} />
+      <Route path="*" element={<NotFound />} />
+
       
-      {/* Public Routes */}
-      <Route
+      {/* <Route
         path="/"
         element={
           isAuthenticated ? <Navigate to="/courses" replace /> : <LoginPage />
@@ -31,7 +41,6 @@ const AppRoutes: React.FC = () => {
         }
       />
 
-      {/* Protected Routes */}
       <Route
         path="/courses"
         element={
@@ -64,10 +73,9 @@ const AppRoutes: React.FC = () => {
             <AdminPanel />
           </ProtectedRoute>
         }
-      />
+      /> */}
 
-      {/* 404 Page */}
-      <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 };

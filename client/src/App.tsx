@@ -3,12 +3,13 @@ import { useAuthStore } from "./store/authStore";
 import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./components/Layout/Navbar";
 import Footer from "./components/Layout/Footer";
-import Spinner from './components/ui/Spinner'
+import Spinner from "./components/ui/Spinner";
 import apiClient from "./utils/apiClient";
 import useSocket from "./hooks/useSocket";
+import './styles/global.scss'
 
 export default function App() {
-  const {isAuthenticated, login, user} = useAuthStore((state) => state);
+  const { isAuthenticated, login, user } = useAuthStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
 
   useSocket(user?._id ?? null);
@@ -22,26 +23,20 @@ export default function App() {
       login(tokenResponse.data.accessToken, userResponse.data);
     } catch (error) {
       console.error("Error refreshing access token:", error);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useEffect(()=>{
-    if(!isAuthenticated){
+  useEffect(() => {
+    if (!isAuthenticated) {
       refreshAccessToken();
-    }else{
-      setIsLoading(false)
+    } else {
+      setIsLoading(false);
     }
-  }, [])
+  }, []);
 
-  if(isLoading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
-  return (
-    <>
-      <Navbar />
-      <AppRoutes />
-      <Footer />
-    </>
-  );
+  return <AppRoutes />;
 }

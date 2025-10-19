@@ -1,0 +1,8 @@
+/* In your global styles or 'App.css' */
+.slick-arrow {
+  z-index: 2 !important;
+}
+.slick-prev:before, .slick-next:before {
+  color: gray;
+  font-size: 28px;
+}
