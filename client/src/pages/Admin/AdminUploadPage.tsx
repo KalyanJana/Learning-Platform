@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
-import { useAuthStore } from "../../store/authStore";
+import { useCourseStore } from "../../store/useCourseStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { Navigate } from "react-router-dom";
 
 export default function AdminUploadPage() {
@@ -170,7 +170,9 @@ export default function AdminUploadPage() {
               </a>
             </Typography>
           ) : (
-            <Typography color="error.main" noWrap>{uploadResult.error}</Typography>
+            <Typography color="error.main" noWrap>
+              {uploadResult.error}
+            </Typography>
           )}
         </Box>
       )}

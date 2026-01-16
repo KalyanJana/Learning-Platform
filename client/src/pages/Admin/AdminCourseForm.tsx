@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Typography
-} from "@mui/material";
+import { TextField, Button, Typography } from "@mui/material";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 export default function AdminCourseForm() {
   const { fetchCourses } = useCourseStore();
@@ -24,7 +20,7 @@ export default function AdminCourseForm() {
         title,
         description,
         price,
-        bannerUrl
+        bannerUrl,
       };
       const res = await apiClient.post("/courses/v1", payload);
       setResult(res.data);
@@ -41,11 +37,13 @@ export default function AdminCourseForm() {
 
   return (
     <form onSubmit={handleCreate}>
-      <Typography variant="h6" mb={2}>Create New Course</Typography>
+      <Typography variant="h6" mb={2}>
+        Create New Course
+      </Typography>
       <TextField
         label="Title"
         value={title}
-        onChange={e => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)}
         fullWidth
         required
         sx={{ mb: 2 }}
@@ -53,7 +51,7 @@ export default function AdminCourseForm() {
       <TextField
         label="Description"
         value={description}
-        onChange={e => setDescription(e.target.value)}
+        onChange={(e) => setDescription(e.target.value)}
         fullWidth
         sx={{ mb: 2 }}
       />
@@ -61,7 +59,7 @@ export default function AdminCourseForm() {
         label="Price"
         type="number"
         value={price}
-        onChange={e => setPrice(e.target.value)}
+        onChange={(e) => setPrice(e.target.value)}
         fullWidth
         required
         sx={{ mb: 2 }}
@@ -69,7 +67,7 @@ export default function AdminCourseForm() {
       <TextField
         label="Banner Image URL"
         value={bannerUrl}
-        onChange={e => setBannerUrl(e.target.value)}
+        onChange={(e) => setBannerUrl(e.target.value)}
         fullWidth
         required
         sx={{ mb: 2 }}

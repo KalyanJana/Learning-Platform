@@ -1,7 +1,7 @@
 // src/routes/ProtectedRoute.tsx
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import {jwtDecode} from "jwt-decode";
+import { useAuthStore } from "../store/useAuthStore";
+import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {
   exp: number; // Expiration time in seconds
@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated, accessToken, logout } = useAuthStore();
+  const { isAuthenticated, accessToken, clearAuth } = useAuthStore();
 
   // If not authenticated, redirect to login
   if (!isAuthenticated || !accessToken) {
@@ -22,18 +22,18 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   // Decode token to check expiration
   try {
     const decoded = jwtDecode<JwtPayload>(accessToken);
-    
+
     const now = Date.now() / 1000; // Current time in seconds
 
     if (decoded.exp < now) {
       // Token expired -> logout & redirect
       console.log("calling log out", decoded.exp, now);
-      logout();
+      clearAuth();
       return <Navigate to="/" replace />;
     }
   } catch (error) {
     console.error("Invalid access token", error);
-    logout();
+    clearAuth();
     return <Navigate to="/" replace />;
   }
 

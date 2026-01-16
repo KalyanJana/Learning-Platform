@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/useAuthStore";
 import apiClient from "../utils/apiClient";
 
 let socket: Socket | null = null;
 
 export default function useSocket(userId: string | null) {
-  const logout = useAuthStore((state) => state.logout);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   useEffect(() => {
     console.log("useSocket hook triggered, userId:", userId);
@@ -29,18 +29,18 @@ export default function useSocket(userId: string | null) {
       console.log("Emitted registerUser with userId:", userId);
     });
 
-    socket.on("forceLogout", async() => {
+    socket.on("forceLogout", async () => {
       alert("You have been logged out due to another login.");
       // Optional: Call backend /logout endpoint to clear the refresh token from cookie
       try {
-        console.log("calling log out handler...")
+        console.log("calling log out handler...");
         await apiClient.post("/users/v1/logout"); // Ensure backend expires refreshToken cookie
-        console.log("logout completed...")
-        logout();
+        console.log("logout completed...");
+        clearAuth();
         // if(window.location.href !== "/"){
         //   window.location.href = "/";
         // }
-      } catch(error) {
+      } catch (error) {
         console.log("Error logging out:", error);
       }
     });
@@ -54,5 +54,5 @@ export default function useSocket(userId: string | null) {
       socket.disconnect();
       socket = null;
     };
-  }, [userId, logout]);
+  }, [userId, clearAuth]);
 }

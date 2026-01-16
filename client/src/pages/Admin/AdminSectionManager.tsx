@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, MenuItem, Typography } from "@mui/material";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 export default function AdminSectionManager() {
   const { courses, fetchCourses } = useCourseStore();
@@ -22,7 +22,8 @@ export default function AdminSectionManager() {
         description,
       });
       setResult(resp.data);
-      setTitle(""); setDescription("");
+      setTitle("");
+      setDescription("");
       fetchCourses(); // Refresh
     } catch (error: any) {
       setResult({ error: error.message });
@@ -32,32 +33,45 @@ export default function AdminSectionManager() {
 
   return (
     <Box sx={{ p: 3, mb: 4, maxWidth: 600, mx: "auto" }}>
-      <Typography variant="h6" mb={2}>Add Section to Course</Typography>
+      <Typography variant="h6" mb={2}>
+        Add Section to Course
+      </Typography>
       <form onSubmit={handleAddSection}>
         <TextField
           select
           label="Choose Course"
           value={courseId}
-          onChange={e => setCourseId(e.target.value)}
-          fullWidth sx={{ mb: 2 }}
+          onChange={(e) => setCourseId(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
         >
-          {courses.map(c => (
-            <MenuItem key={c._id} value={c._id}>{c.title}</MenuItem>
+          {courses.map((c) => (
+            <MenuItem key={c._id} value={c._id}>
+              {c.title}
+            </MenuItem>
           ))}
         </TextField>
         <TextField
           label="Section Title"
           value={title}
-          onChange={e => setTitle(e.target.value)}
-          fullWidth sx={{ mb: 2 }} required
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+          required
         />
         <TextField
           label="Section Description"
           value={description}
-          onChange={e => setDescription(e.target.value)}
-          fullWidth sx={{ mb: 2 }}
+          onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
         />
-        <Button type="submit" variant="contained" fullWidth disabled={adding || !courseId}>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={adding || !courseId}
+        >
           {adding ? "Adding..." : "Add Section"}
         </Button>
       </form>
@@ -68,9 +82,7 @@ export default function AdminSectionManager() {
               Added section: {result.title}
             </Typography>
           ) : (
-            <Typography color="error.main">
-              {result.error}
-            </Typography>
+            <Typography color="error.main">{result.error}</Typography>
           )}
         </Box>
       )}

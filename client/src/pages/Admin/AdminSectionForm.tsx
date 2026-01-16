@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { TextField, MenuItem, Button, Typography } from "@mui/material";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 export default function AdminSectionForm() {
   const { courses, fetchCourses } = useCourseStore();

@@ -1,9 +1,14 @@
-import React from 'react'
+// src/features/student/pages/StudentDashboardPage.tsx
+import React from 'react';
+import { Box } from '@mui/material';
+import StudentDashboard from '../components/StudentDashboard';
 
-const StudentDashboardpage = () => {
+const StudentDashboardPage = () => {
   return (
-    <div>StudentDashboardpage</div>
-  )
-}
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <StudentDashboard />
+    </Box>
+  );
+};
 
-export default StudentDashboardpage
+export default StudentDashboardPage;

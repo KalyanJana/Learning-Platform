@@ -1,20 +1,22 @@
-import { User, IUser } from "../models/user.modal";
+import { User } from "../models/user.modal";
+import { UserType } from "../types/user";
 
 export class UserRepository {
-  async createUser(userData: Partial<IUser>): Promise<IUser> {
+  async createUser(userData: Partial<UserType>): Promise<UserType> {
     const user = new User(userData);
     return await user.save();
   }
-
-  async findByEmail(email: string): Promise<IUser | null> {
+  
+  async findByEmail(email: string): Promise<UserType | null> {
     return await User.findOne({ email });
   }
 
-  async findByUsername(username: string): Promise<IUser | null> {
-    return await User.findOne({ username });
+  async findByUserName(userName: string): Promise<UserType | null> {
+    console.log("username", userName)
+    return await User.findOne({ email: userName });
   }
 
-  async findByUserId(id: string): Promise<IUser | null> {
+  async findByUserId(id: string): Promise<UserType | null> {
     return await User.findById(id);
   }
 
@@ -26,7 +28,7 @@ export class UserRepository {
     await User.findByIdAndUpdate(userId, { $pull: { refreshTokens: token } });
   }
 
-  async findByRefreshToken(token: string): Promise<IUser | null> {
+  async findByRefreshToken(token: string): Promise<UserType | null> {
     return await User.findOne({ refreshTokens: token });
   }
 }

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 export default function AdminCourseManager() {
   const { fetchCourses } = useCourseStore();
@@ -24,7 +24,10 @@ export default function AdminCourseManager() {
         price: parseFloat(price),
       });
       setResult(resp.data);
-      setTitle(""); setDescription(""); setBannerUrl(""); setPrice("");
+      setTitle("");
+      setDescription("");
+      setBannerUrl("");
+      setPrice("");
       fetchCourses(); // Refresh list in course store
     } catch (error: any) {
       setResult({ error: error.message });
@@ -34,32 +37,40 @@ export default function AdminCourseManager() {
 
   return (
     <Box sx={{ p: 3, mb: 4, maxWidth: 600, mx: "auto" }}>
-      <Typography variant="h6" mb={2}>Add New Course</Typography>
+      <Typography variant="h6" mb={2}>
+        Add New Course
+      </Typography>
       <form onSubmit={handleCreateCourse}>
         <TextField
           label="Course Title"
           value={title}
-          onChange={e => setTitle(e.target.value)}
-          fullWidth sx={{ mb: 2 }} required
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+          required
         />
         <TextField
           label="Description"
           value={description}
-          onChange={e => setDescription(e.target.value)}
-          fullWidth sx={{ mb: 2 }}
+          onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
         />
         <TextField
           label="Banner URL"
           value={bannerUrl}
-          onChange={e => setBannerUrl(e.target.value)}
-          fullWidth sx={{ mb: 2 }}
+          onChange={(e) => setBannerUrl(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
         />
         <TextField
           label="Price"
           value={price}
           type="number"
-          onChange={e => setPrice(e.target.value)}
-          fullWidth sx={{ mb: 2 }} required
+          onChange={(e) => setPrice(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+          required
         />
         <Button type="submit" variant="contained" fullWidth disabled={creating}>
           {creating ? "Creating..." : "Create Course"}
@@ -72,9 +83,7 @@ export default function AdminCourseManager() {
               Created course: {result.title}
             </Typography>
           ) : (
-            <Typography color="error.main">
-              {result.error}
-            </Typography>
+            <Typography color="error.main">{result.error}</Typography>
           )}
         </Box>
       )}

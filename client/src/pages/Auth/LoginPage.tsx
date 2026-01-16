@@ -1,7 +1,7 @@
 // src/pages/Auth/LoginPage.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { TextField, Button, Box } from "@mui/material";
 import apiClient from "../../utils/apiClient";
 

@@ -1,9 +1,9 @@
 // src/pages/Dashboard/DashboardPage.tsx
 import React, { useEffect, useState } from "react";
 import { Container, Typography, Box } from "@mui/material";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import CourseCard from "../../components/course/CourseCard";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 interface Course {
   id: number;

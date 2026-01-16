@@ -16,7 +16,7 @@ router.get("/available", authenticateAccessToken, courseController.getAvailableC
 router.post("/", courseController.createCourse);
 router.post("/:courseId/sections", courseController.addSection);
 router.post(
-  "/:courseId/sections/:sectionId/lessons/url",
+  "/:courseId/sections/:sectionId/lessons",
   courseController.addLesson
 );
 

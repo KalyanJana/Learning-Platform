@@ -4,7 +4,7 @@ import { Schema, model, Types } from "mongoose";
 const sectionSchema = new Schema({
   course: { type: Types.ObjectId, ref: "Course", required: true },
   title: { type: String, required: true },
-  description: { type: String },
+  duration: { type: String, required: false, default: "0 mins" },
   order: { type: Number, required: true }, // position in course
   lessons: [{ type: Types.ObjectId, ref: "Lesson", default: [] }],
   createdAt: { type: Date, default: Date.now },

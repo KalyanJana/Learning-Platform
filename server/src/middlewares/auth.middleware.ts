@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "super_secret_key_123";
 
 export interface AuthRequest extends Request {
-  user?: { _id: string; username: string; email: string };
+  user?: { _id: string; mobileno: string; name: string };
 }
 
 export interface AuthRequestWithRefresh extends AuthRequest {
@@ -23,7 +23,7 @@ export const authenticateAccessToken = (req: AuthRequest, res: Response, next: N
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: "Invalid or expired access token" });
 
-    req.user = user as { _id: string; username: string; email: string };
+    req.user = user as { _id: string; email: string, mobileNo: string; name: string, role: string };
     console.log(req.user)
     next();
   });
@@ -42,7 +42,7 @@ export const authenticateRefreshToken = (
 
   jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: "Invalid or expired refresh token" });
-    req.user = user as { _id: string; username: string; email: string };
+    req.user = user as { _id: string; email: string, mobileNo: string; name: string, role: string };
     next();
   });
 };

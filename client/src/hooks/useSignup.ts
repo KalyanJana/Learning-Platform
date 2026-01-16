@@ -1,7 +1,7 @@
 // src/hooks/useSignup.ts
 import { useState } from "react";
 import apiClient from "../utils/apiClient";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/useAuthStore";
 
 interface SignupData {
   username: string;

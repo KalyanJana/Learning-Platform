@@ -34,8 +34,7 @@ const BannerSlider = () => {
               height: { xs: 200, sm: 300, md: 400 }, // Responsive heights
               overflow: "hidden",
               position: "relative",
-              borderRadius: 2,
-              border: "1px solid blue",
+              borderRadius: 2
             }}
           >
             <img

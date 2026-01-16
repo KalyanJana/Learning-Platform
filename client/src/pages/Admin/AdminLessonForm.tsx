@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import {
-  TextField, MenuItem, Button, Typography, Box
-} from "@mui/material";
+import { TextField, MenuItem, Button, Typography, Box } from "@mui/material";
 import apiClient from "../../utils/apiClient";
-import { useCourseStore } from "../../store/courseStore";
+import { useCourseStore } from "../../store/useCourseStore";
 
 export default function AdminLessonForm() {
   const { courses } = useCourseStore();
@@ -27,7 +25,7 @@ export default function AdminLessonForm() {
       title: title || resourceUrl.split("/").pop() || "",
       url: resourceUrl,
       type,
-      order: 0
+      order: 0,
     };
     try {
       const resp = await apiClient.post(
@@ -35,7 +33,8 @@ export default function AdminLessonForm() {
         data
       );
       setResult(resp.data);
-      setTitle(""); setResourceUrl("");
+      setTitle("");
+      setResourceUrl("");
     } catch (err: any) {
       setResult({ error: err.message });
     }
@@ -44,56 +43,83 @@ export default function AdminLessonForm() {
 
   return (
     <Box>
-      <Typography variant="h6" mb={2}>Add Lesson (Video/PDF by URL)</Typography>
+      <Typography variant="h6" mb={2}>
+        Add Lesson (Video/PDF by URL)
+      </Typography>
       <form onSubmit={handleUpload}>
         <TextField
           select
           label="Course"
           value={courseId}
-          onChange={e => { setCourseId(e.target.value); setSectionId(""); }}
-          fullWidth required sx={{ mb: 2 }}>
-          {courses.map(c => <MenuItem key={c._id} value={c._id}>{c.title}</MenuItem>)}
+          onChange={(e) => {
+            setCourseId(e.target.value);
+            setSectionId("");
+          }}
+          fullWidth
+          required
+          sx={{ mb: 2 }}
+        >
+          {courses.map((c) => (
+            <MenuItem key={c._id} value={c._id}>
+              {c.title}
+            </MenuItem>
+          ))}
         </TextField>
         <TextField
           select
           label="Section"
           value={sectionId}
-          onChange={e => setSectionId(e.target.value)}
-          fullWidth required sx={{ mb: 2 }}
-          disabled={!courseId}>
-          {curSections.map(s => <MenuItem key={s._id} value={s._id}>{s.title}</MenuItem>)}
+          onChange={(e) => setSectionId(e.target.value)}
+          fullWidth
+          required
+          sx={{ mb: 2 }}
+          disabled={!courseId}
+        >
+          {curSections.map((s) => (
+            <MenuItem key={s._id} value={s._id}>
+              {s.title}
+            </MenuItem>
+          ))}
         </TextField>
         <TextField
           label="Lesson Title"
           value={title}
-          onChange={e => setTitle(e.target.value)}
-          fullWidth sx={{ mb: 2 }} />
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        />
         <TextField
           select
           label="Type"
           value={type}
-          onChange={e => setType(e.target.value)}
-          fullWidth required sx={{ mb: 2 }}>
+          onChange={(e) => setType(e.target.value)}
+          fullWidth
+          required
+          sx={{ mb: 2 }}
+        >
           <MenuItem value="video">Video</MenuItem>
           <MenuItem value="pdf">PDF</MenuItem>
         </TextField>
         <TextField
           label={type === "video" ? "Video URL" : "PDF URL"}
           value={resourceUrl}
-          onChange={e => setResourceUrl(e.target.value)}
+          onChange={(e) => setResourceUrl(e.target.value)}
           fullWidth
           required
           sx={{ mb: 2 }}
-          placeholder={type === "video"
-            ? "https://your-video-host.com/lesson.m3u8"
-            : "https://your-site.com/lesson.pdf"}
+          placeholder={
+            type === "video"
+              ? "https://your-video-host.com/lesson.m3u8"
+              : "https://your-site.com/lesson.pdf"
+          }
         />
         <Button
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
-          disabled={!resourceUrl || !sectionId || !courseId || uploading}>
+          disabled={!resourceUrl || !sectionId || !courseId || uploading}
+        >
           {uploading ? "Saving..." : "Save Lesson"}
         </Button>
       </form>
@@ -101,10 +127,15 @@ export default function AdminLessonForm() {
         <Box mt={2}>
           {result.url ? (
             <Typography color="success.main" noWrap>
-              Saved: <a href={result.url} target="_blank" rel="noreferrer">{result.url}</a>
+              Saved:{" "}
+              <a href={result.url} target="_blank" rel="noreferrer">
+                {result.url}
+              </a>
             </Typography>
           ) : (
-            <Typography color="error" noWrap>{result.error}</Typography>
+            <Typography color="error" noWrap>
+              {result.error}
+            </Typography>
           )}
         </Box>
       )}

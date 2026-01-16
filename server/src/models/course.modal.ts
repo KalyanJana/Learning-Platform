@@ -5,15 +5,16 @@ const courseSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    bannerUrl: { type: String, required: true },
+    thumbnail: { type: String, required: true },
+    instructor: {type: String, required: false},
     price: { type: Number, required: true },
-    discount: { type: Number, default: 5 }, // percentage discount
+    rating: { type: String, default: "0" },
+    studentEnrolled: { type: Number, default: 0 },
+    totalDuration: {type: String, required: false, default: "0 hrs"},
+    discount: { type: Number, default: 0 }, // percentage discount
     isPublished: { type: Boolean, default: false },
-    instructor: { type: Schema.Types.ObjectId, ref: "User" }, // or 'admin'
-    enrolledUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
-    // Optionally: Array for search perf, but usually populated
     sections: [{ type: Schema.Types.ObjectId, ref: "Section", default: [] }],
-    validation: { type: String, default: "none" }, // for certificates
+    validation: { type: String, default: "none" }, 
   },
   { timestamps: true }
 );

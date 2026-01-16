@@ -19,17 +19,15 @@ export const CourseService = {
   async createCourse(body: {
     title: string;
     description?: string;
+    thumbnail?: string;
     price: number;
-    discount?: number;
-    bannerUrl?: string;
   }) {
     // Save course in database
     const course = await CourseRepository.createCourseInDb({
       title: body.title,
       description: body.description,
+      thumbnail: body.thumbnail,
       price: body.price,
-      discount: body.discount,
-      bannerUrl: body.bannerUrl,
     });
     return course;
   },

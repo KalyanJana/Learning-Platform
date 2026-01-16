@@ -22,8 +22,9 @@ const sendToken = (
     accessToken,
     user: {
       _id: user._id,
+      mobileNo: user.mobileNo,
       email: user.email,
-      username: user.username,
+      name: user.name,
       role: user.role,
     },
   });
@@ -45,7 +46,6 @@ export const loginUser = async (req: Request, res: Response) => {
     const { accessToken, refreshToken, user } = await userService.loginUser(
       req.body
     );
-    console.log("user", user);
 
     sendToken(res, accessToken, refreshToken, user);
 
@@ -60,8 +60,11 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Refresh token missing" });
 
   try {
-    const newAccessToken = await userService.refreshAccessToken(refreshToken);
-    res.json({ accessToken: newAccessToken });
+    const { newAccessToken, user } = await userService.refreshAccessToken(refreshToken);
+    res.json({ 
+      accessToken: newAccessToken, 
+      user 
+    });
   } catch (error: any) {
     res.status(403).json({ error: error.message });
   }
@@ -69,7 +72,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
-    console.log("calling loout handler...")
+    // console.log("calling loout handler...")
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       return res.status(400).json({ error: "Refresh token is missing" });

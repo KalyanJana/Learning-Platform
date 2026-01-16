@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import apiClient from "../../utils/apiClient";
 
 export default function Navbar() {
@@ -8,13 +8,13 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try{
+    try {
       const response = await apiClient.post("/users/v1/logout");
       alert(response.data.message);
       logout();
       navigate("/"); //redirect to home or login page
-    }catch(error){
-      console.log("Error in logout!!", error)
+    } catch (error) {
+      console.log("Error in logout!!", error);
     }
   };
 
@@ -32,9 +32,11 @@ export default function Navbar() {
         <Box>
           {user ? (
             <>
-              {user.role === "admin" && <Button color="inherit" component={Link} to="/admin/upload">
-                upload
-              </Button>}
+              {user.role === "admin" && (
+                <Button color="inherit" component={Link} to="/admin/upload">
+                  upload
+                </Button>
+              )}
               <Button color="inherit" component={Link} to="/courses">
                 courses
               </Button>

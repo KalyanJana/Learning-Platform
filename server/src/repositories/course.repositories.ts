@@ -193,9 +193,8 @@ export const CourseRepository = {
   async createCourseInDb(data: {
     title: string;
     description?: string;
-    bannerUrl: string;
+    thumbnail: string;
     price: number;
-    discount?: number;
   }) {
     console.log("repository layer");
     const course = new Course(data);
