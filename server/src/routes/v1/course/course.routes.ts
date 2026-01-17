@@ -28,6 +28,18 @@ router.post(
   courseController.addLesson,
 );
 
+// Course Approval Routes (Admin)
+router.get("/enrollments/pending", courseController.getPendingEnrollments);
+router.get("/enrollments/stats", courseController.getCourseApprovalStats);
+router.post(
+  "/enrollments/:enrollmentId/approve",
+  courseController.approveCourseEnrollment,
+);
+router.post(
+  "/enrollments/:enrollmentId/reject",
+  courseController.rejectCourseEnrollment,
+);
+
 //Student
 router.post("/:courseId/enroll", courseController.enrollCourse);
 router.post(

@@ -14,6 +14,7 @@ const enrollmentSchema = new Schema(
 
     enrolledAt: { type: Date, default: Date.now },
     approvedAt: { type: Date, default: null },
+    rejectedAt: { type: Date, default: null },
 
     progress: { type: Number, default: 0 }, // percentage
     completed: { type: Boolean, default: false },
@@ -30,6 +31,10 @@ const enrollmentSchema = new Schema(
       amount: Number,
       submittedAt: { type: Date, default: Date.now },
     },
+
+    // Approval/Rejection notes
+    approvalNotes: { type: String, default: null },
+    rejectionReason: { type: String, default: null },
   },
   { timestamps: true },
 );

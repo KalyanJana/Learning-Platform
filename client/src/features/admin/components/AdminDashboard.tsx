@@ -11,11 +11,13 @@ import StaffAccountConfirmation from './accountConfirm/StaffAccountConfirmation'
 import StudentAccountConfirm from './accountConfirm/StudentAccountConfirm';
 import StaffCommission from './commission/StaffCommission';
 import StudentCommission from './commission/StudentCommission';
+import CourseConfirmationDashboard from './courseConfirmation/CourseConfirmationDashboard';
 
 export type DashboardSection = 
   | 'add-course' 
   | 'add-section'
   | 'add-lesson'
+  | 'course-confirmation'
   | 'staff-account-confirmation'
   | 'student-account-confirmation'
   | 'staff-commissions'
@@ -40,6 +42,8 @@ const AdminDashboard = () => {
         return <AddSection />;
       case 'add-lesson':
         return <AddLesson />;
+      case 'course-confirmation':
+        return <CourseConfirmationDashboard />;
       case 'staff-account-confirmation':
         return <StaffAccountConfirmation />;
       case 'student-account-confirmation':

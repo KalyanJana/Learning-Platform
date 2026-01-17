@@ -192,4 +192,102 @@ export const EnrollRepository = {
 
     return availableCourses;
   },
+
+  // Course Approval Repository Methods
+  async getPendingEnrollments() {
+    const enrollments = await EnrollmentCourse.find({
+      status: "pending",
+    })
+      .populate({
+        path: "user",
+        select: "firstName lastName email",
+      })
+      .populate({
+        path: "course",
+        select: "title price",
+      })
+      .sort({ createdAt: -1 });
+
+    return enrollments;
+  },
+
+  async approveCourseEnrollment(enrollmentId: string, reason: string) {
+    const enrollment = await EnrollmentCourse.findByIdAndUpdate(
+      enrollmentId,
+      {
+        status: "approved",
+        approvedAt: new Date(),
+        approvalNotes: reason,
+      },
+      { new: true },
+    )
+      .populate({
+        path: "user",
+        select: "firstName lastName email",
+      })
+      .populate({
+        path: "course",
+        select: "title price",
+      });
+
+    if (!enrollment) {
+      throw new Error("Enrollment not found");
+    }
+
+    return enrollment;
+  },
+
+  async rejectCourseEnrollment(enrollmentId: string, reason: string) {
+    const enrollment = await EnrollmentCourse.findByIdAndUpdate(
+      enrollmentId,
+      {
+        status: "rejected",
+        rejectionReason: reason,
+        rejectedAt: new Date(),
+      },
+      { new: true },
+    )
+      .populate({
+        path: "user",
+        select: "firstName lastName email",
+      })
+      .populate({
+        path: "course",
+        select: "title price",
+      });
+
+    if (!enrollment) {
+      throw new Error("Enrollment not found");
+    }
+
+    return enrollment;
+  },
+
+  async getCourseApprovalStats() {
+    const stats = await EnrollmentCourse.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const result = {
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+      total: 0,
+    };
+
+    stats.forEach((stat) => {
+      if (stat._id === "pending") result.pending = stat.count;
+      else if (stat._id === "approved") result.approved = stat.count;
+      else if (stat._id === "rejected") result.rejected = stat.count;
+    });
+
+    result.total = result.pending + result.approved + result.rejected;
+
+    return result;
+  },
 };

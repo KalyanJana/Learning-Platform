@@ -117,4 +117,37 @@ export const CourseService = {
     const courses = await EnrollRepository.getUserNotEnrolledCourses(userId);
     return courses;
   },
+
+  // Course Approval Service Methods
+  async getPendingEnrollments() {
+    const enrollments = await EnrollRepository.getPendingEnrollments();
+    return enrollments;
+  },
+
+  async approveCourseEnrollment(enrollmentId: string, reason: string) {
+    if (!Types.ObjectId.isValid(enrollmentId)) {
+      throw new Error("Invalid enrollment ID");
+    }
+    const enrollment = await EnrollRepository.approveCourseEnrollment(
+      enrollmentId,
+      reason
+    );
+    return enrollment;
+  },
+
+  async rejectCourseEnrollment(enrollmentId: string, reason: string) {
+    if (!Types.ObjectId.isValid(enrollmentId)) {
+      throw new Error("Invalid enrollment ID");
+    }
+    const enrollment = await EnrollRepository.rejectCourseEnrollment(
+      enrollmentId,
+      reason
+    );
+    return enrollment;
+  },
+
+  async getCourseApprovalStats() {
+    const stats = await EnrollRepository.getCourseApprovalStats();
+    return stats;
+  },
 };

@@ -192,3 +192,73 @@ export const getUserNotEnrolledCourses = async (
     });
   }
 };
+
+// Course Approval Endpoints (Admin)
+export const getPendingEnrollments = async (req: Request, res: Response) => {
+  try {
+    const enrollments = await CourseService.getPendingEnrollments();
+    res.json(enrollments);
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message || "Failed to fetch pending enrollments",
+    });
+  }
+};
+
+export const approveCourseEnrollment = async (req: Request, res: Response) => {
+  try {
+    const { enrollmentId } = req.params;
+    const { reason } = req.body;
+    const enrollment = await CourseService.approveCourseEnrollment(
+      enrollmentId,
+      reason || "Approved by admin",
+    );
+    res.json({
+      success: true,
+      message: "Course enrollment approved successfully",
+      data: enrollment,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message || "Failed to approve enrollment",
+    });
+  }
+};
+
+export const rejectCourseEnrollment = async (req: Request, res: Response) => {
+  try {
+    const { enrollmentId } = req.params;
+    const { reason } = req.body;
+
+    if (!reason) {
+      return res.status(400).json({
+        error: "Rejection reason is required",
+      });
+    }
+
+    const enrollment = await CourseService.rejectCourseEnrollment(
+      enrollmentId,
+      reason,
+    );
+    res.json({
+      success: true,
+      message: "Course enrollment rejected successfully",
+      data: enrollment,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message || "Failed to reject enrollment",
+    });
+  }
+};
+
+export const getCourseApprovalStats = async (req: Request, res: Response) => {
+  try {
+    const stats = await CourseService.getCourseApprovalStats();
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message || "Failed to fetch approval statistics",
+    });
+  }
+};

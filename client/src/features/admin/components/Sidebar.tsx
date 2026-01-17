@@ -31,6 +31,7 @@ export type DashboardSection =
   | "add-course"
   | "add-section"
   | "add-lesson"
+  | "course-confirmation"
   | "staff-account-confirmation"
   | "student-account-confirmation"
   | "staff-commissions"
@@ -225,6 +226,19 @@ const Sidebar: React.FC<SidebarProps> = ({
             </ListItemButton>
           </List>
         </Collapse>
+
+        {/* Admin course confirmation */}
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={activeSection === "course-confirmation"}
+            onClick={() => handleSectionClick("course-confirmation")}
+          >
+            <ListItemIcon>
+              <School />
+            </ListItemIcon>
+            <ListItemText primary="Course Confirmation" />
+          </ListItemButton>
+        </ListItem>
 
         {/* Admin Account Create */}
         <ListItem disablePadding>
