@@ -2,10 +2,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import NotFound from "../pages/NotFound";
-// import ProtectedRoute from "../context/ProtectedRoute";
+import RoleProtectedRoute from "../context/RoleProtectedRoute";
 import { useAuthStore } from "../store/useAuthStore";
-// import CourseDetails from "../pages/Courses/CourseDetails";
-// import AdminPanel from "../pages/Admin/AdminPannel";
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/Adminlayout";
 import StudentLayout from "../layouts/StudentLayout";
@@ -50,25 +48,31 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/admin/*"
         element={
-          <AdminLayout>
-            <AdminRoutes />
-          </AdminLayout>
+          <RoleProtectedRoute allowedRoles={["admin"]} fallbackPath="/student">
+            <AdminLayout>
+              <AdminRoutes />
+            </AdminLayout>
+          </RoleProtectedRoute>
         }
       />
       <Route
         path="/student/*"
         element={
-          <StudentLayout>
-            <StudentRoutes />
-          </StudentLayout>
+          <RoleProtectedRoute allowedRoles={["student"]} fallbackPath="/admin">
+            <StudentLayout>
+              <StudentRoutes />
+            </StudentLayout>
+          </RoleProtectedRoute>
         }
       />
       <Route
         path="/staff/*"
         element={
-          <StudentLayout>
-            <StaffRoutes />
-          </StudentLayout>
+          <RoleProtectedRoute allowedRoles={["staff"]} fallbackPath="/admin">
+            <StudentLayout>
+              <StaffRoutes />
+            </StudentLayout>
+          </RoleProtectedRoute>
         }
       />
       <Route path="*" element={<NotFound />} />
