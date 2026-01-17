@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import StudentDashboardPage from "../pages/StudentDashboardPage";
 import CourseProgressPage from "../pages/CourseProgressPage";
 import CourseViewerPage from "../components/Library/courseViewer/CourseVIewerPage";
-import PaymentPage from "../components/payment/PaymentPage";
+import PaymentPage from "../pages/PaymentPage";
 
 const StudentRoutes = () => (
   <Routes>

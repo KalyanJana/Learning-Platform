@@ -4,6 +4,7 @@ import {
   SectionRepository,
   LessonRepository,
   uploadFileToCloudinaryRepo,
+  EnrollRepository,
 } from "../repositories/course.repositories";
 import { Types } from "mongoose";
 
@@ -62,5 +63,58 @@ export const CourseService = {
     await LessonRepository.addLessonToSection(sectionId, lesson._id);
     console.log("Added lesson to section:", sectionId);
     return lesson;
+  },
+
+  async enrollCourse(courseId: string, userId: string) {
+    const course = await EnrollRepository.enrollCourse(courseId, userId);
+    return course;
+  },
+
+  async submitPaymentDetails(
+    courseId: string,
+    userId: string,
+    paymentData: {
+      payeeName: string;
+      transactionId: string;
+      amount: number;
+    },
+  ) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user ID");
+    }
+    if (!Types.ObjectId.isValid(courseId)) {
+      throw new Error("Invalid course ID");
+    }
+    const enrollment = await EnrollRepository.submitPaymentDetails(
+      courseId,
+      userId,
+      paymentData,
+    );
+    return enrollment;
+  },
+
+  async getUserEnrolledCourses(userId: string) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user ID");
+    }
+    const courses = await EnrollRepository.getUserEnrolledCourses(userId);
+    return courses;
+  },
+
+  async getUserPendingCourses(userId: string) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user ID");
+    }
+    const enrollments =
+      await EnrollRepository.getUserPendingCourses(userId);
+    return enrollments;
+  },
+
+  async getUserNotEnrolledCourses(userId: string) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user ID");
+    }
+    const courses = await EnrollRepository.getUserNotEnrolledCourses(userId);
+    return courses;
   },
 };

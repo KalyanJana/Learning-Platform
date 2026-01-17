@@ -7,11 +7,14 @@ import {
   Button,
   useMediaQuery,
   useTheme,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
-import { ArrowBack, MenuBook, Close } from "@mui/icons-material";
+import { ArrowBack, MenuBook } from "@mui/icons-material";
 import VideoPlayer from "./VideoPlayer";
 import PdfViewer from "./PdfViewer";
 import ContentSidebar from "./ContentSidebar";
+import { useGetCourseById } from "../../../../../hooks/useCourseHooks";
 import type { Course, Lesson } from "../../../types/course.types";
 
 const CourseViewerPage = () => {
@@ -20,62 +23,52 @@ const CourseViewerPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const {
+    data: fetchedCourse,
+    isLoading,
+    error,
+  } = useGetCourseById(courseId || "");
   const [course, setCourse] = useState<Course | null>(null);
   const [currentContent, setCurrentContent] = useState<Lesson | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
 
-  // Mock data - Replace with React Query
+  // Transform fetched course data to match Course interface
   useEffect(() => {
-    const mockCourse: Course = {
-      id: courseId || "1",
-      title: "React Mastery Course",
-      description: "Complete React development course",
-      thumbnail: "https://via.placeholder.com/300x200",
-      instructor: "John Doe",
-      price: "₹2,999",
-      totalDuration: "10 hours",
-      studentsEnrolled: 1500,
-      sections: [
-        {
-          id: "s1",
-          title: "Introduction to React",
-          lessons: [
-            {
-              id: "c1",
-              title: "What is React?",
-              type: "video",
-              url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-              duration: 300,
-              completed: false,
-            },
-            {
-              id: "c2",
-              title: "Course Introduction PDF",
-              type: "pdf",
-              url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-              completed: false,
-            },
-          ],
-        },
-        {
-          id: "s2",
-          title: "Components and Props",
-          lessons: [
-            {
-              id: "c3",
-              title: "Understanding Components",
-              type: "video",
-              url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-              duration: 400,
-              completed: false,
-            },
-          ],
-        },
-      ],
-    };
-    setCourse(mockCourse);
-    setCurrentContent(mockCourse.sections[0].lessons[0]);
-  }, [courseId]);
+    if (fetchedCourse) {
+      const transformedCourse: Course = {
+        id: fetchedCourse._id,
+        title: fetchedCourse.title,
+        description: fetchedCourse.description || "",
+        thumbnail:
+          fetchedCourse.thumbnail || "https://via.placeholder.com/300x200",
+        instructor: fetchedCourse.instructor || "Unknown",
+        price: `₹${fetchedCourse.price}`,
+        totalDuration: "N/A",
+        studentsEnrolled: 0,
+        sections: (fetchedCourse.sections || []).map((section: any) => ({
+          id: section._id,
+          title: section.title,
+          lessons: (section.lessons || []).map((lesson: any) => ({
+            id: lesson._id,
+            title: lesson.title,
+            type: lesson.type === "video" ? "video" : "pdf",
+            url: lesson.url,
+            duration: lesson.duration,
+            completed: false,
+          })),
+        })),
+      };
+      setCourse(transformedCourse);
+
+      // Set first lesson as default
+      if (
+        transformedCourse.sections.length > 0 &&
+        transformedCourse.sections[0].lessons.length > 0
+      ) {
+        setCurrentContent(transformedCourse.sections[0].lessons[0]);
+      }
+    }
+  }, [fetchedCourse]);
 
   const handleContentComplete = () => {
     if (!course || !currentContent) return;
@@ -85,7 +78,7 @@ const CourseViewerPage = () => {
 
     for (const section of course.sections) {
       const currentIndex = section.lessons.findIndex(
-        (c) => c.id === currentContent.id
+        (c) => c.id === currentContent.id,
       );
       if (currentIndex !== -1) {
         // Check if there's next content in same section
@@ -114,7 +107,52 @@ const CourseViewerPage = () => {
       setSidebarOpen(false);
     }
   };
-  if (!course || !currentContent) return <div>Loading...</div>;
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Error state
+  if (error || !course || !currentContent) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <Box
+          sx={{
+            p: 2,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <IconButton onClick={() => navigate("/student")}>
+            <ArrowBack />
+          </IconButton>
+          <Box sx={{ flexGrow: 1 }}>Course View</Box>
+        </Box>
+        <Box sx={{ p: 3, flexGrow: 1 }}>
+          <Alert severity="error">
+            {error instanceof Error
+              ? error.message
+              : "Failed to load course content. Please try again."}
+          </Alert>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>

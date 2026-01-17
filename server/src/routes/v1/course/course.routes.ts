@@ -29,5 +29,16 @@ router.post(
 );
 
 //Student
-
+router.post("/:courseId/enroll", courseController.enrollCourse);
+router.post(
+  "/:courseId/payment",
+  authenticateAccessToken,
+  courseController.submitPaymentDetails,
+);
+router.get("/:userId/enrolledCourses", courseController.getUserEnrollCourses);
+router.get("/:userId/pendingCourses", courseController.getUserPendingCourses);
+router.get(
+  "/:userId/otherAvailableCourses",
+  courseController.getUserNotEnrolledCourses,
+);
 export default router;

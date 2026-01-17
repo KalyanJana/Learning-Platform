@@ -1,6 +1,7 @@
 import Course from "../models/course.modal";
 import Section from "../models/section.modal";
 import Lesson from "../models/lesson.modal";
+import EnrollmentCourse from "../models/enrollment.modal";
 import { Types } from "mongoose";
 import cloudinary from "../config/cloudinary";
 
@@ -18,7 +19,6 @@ interface CloudinaryUploadFileResult {
 
 // Standalone function for file upload
 export async function uploadCourseBanner(fileBuffer: Buffer, filename: string) {
-
   console.log({
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME
       ? process.env.CLOUDINARY_CLOUD_NAME
@@ -114,5 +114,82 @@ export const LessonRepository = {
       { $push: { lessons: lessonId } },
       { new: true },
     );
+  },
+};
+
+export const EnrollRepository = {
+  async enrollCourse(courseId: string, userId: string) {
+    const enrollment = new EnrollmentCourse({
+      course: courseId,
+      user: userId,
+      status: "pending",
+    });
+    return await enrollment.save();
+  },
+
+  async submitPaymentDetails(
+    courseId: string,
+    userId: string,
+    paymentData: {
+      payeeName: string;
+      transactionId: string;
+      amount: number;
+    },
+  ) {
+    const enrollment = await EnrollmentCourse.findOneAndUpdate(
+      { course: courseId, user: userId },
+      {
+        paymentDetails: {
+          payeeName: paymentData.payeeName,
+          transactionId: paymentData.transactionId,
+          amount: paymentData.amount,
+          submittedAt: new Date(),
+        },
+        status: "pending",
+      },
+      { new: true, upsert: true },
+    );
+    return enrollment;
+  },
+
+  async getUserEnrolledCourses(userId: string) {
+    const enrollments = await EnrollmentCourse.find({
+      user: userId,
+      status: "approved",
+    }).populate({
+      path: "course",
+      populate: {
+        path: "sections",
+        populate: { path: "lessons" },
+      },
+    });
+    return enrollments.map((enrollment) => enrollment.course);
+  },
+
+  async getUserPendingCourses(userId: string) {
+    const enrollments = await EnrollmentCourse.find({
+      user: userId,
+      status: "pending",
+    }).populate("course");
+    return enrollments;
+  },
+
+  async getUserNotEnrolledCourses(userId: string) {
+    const enrollments = await EnrollmentCourse.find({
+      user: userId,
+      status: { $in: ["approved", "pending"] },
+    }).select("course");
+    const enrolledCourseIds = enrollments.map(
+      (enrollment) => enrollment.course,
+    );
+
+    const availableCourses = await Course.find({
+      _id: { $nin: enrolledCourseIds },
+    }).populate({
+      path: "sections",
+      populate: { path: "lessons" },
+    });
+
+    return availableCourses;
   },
 };

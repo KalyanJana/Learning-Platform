@@ -7,31 +7,56 @@ import {
   CardContent,
   CardMedia,
   Grid,
-  Chip,
-  LinearProgress,
   Button,
+  CircularProgress,
 } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useGetUserEnrolledCourses } from "../../../../hooks/useCourseHooks";
+import { useAuthStore } from "../../../../store/useAuthStore";
 
 const EnrolledCourses = () => {
-  // Mock data - replace with React Query hook
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "React Mastery Course",
-      progress: 65,
-      thumbnail: "https://via.placeholder.com/300x200",
-      instructor: "John Doe",
-    },
-    {
-      id: 2,
-      title: "Node.js Backend Development",
-      progress: 40,
-      thumbnail: "https://via.placeholder.com/300x200",
-      instructor: "Jane Smith",
-    },
-  ];
   const navigate = useNavigate();
+  const { id: userId } = useAuthStore();
+
+  const {
+    data: enrolledCourses = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetUserEnrolledCourses(userId || "");
+
+  if (!userId) {
+    return <Typography color="error">User not authenticated</Typography>;
+  }
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" p={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Typography color="error">
+        {(error as Error).message || "Failed to load enrolled courses"}
+      </Typography>
+    );
+  }
+
+  if (enrolledCourses.length === 0) {
+    return (
+      <Box>
+        <Typography variant="h4" fontWeight="bold" mb={3}>
+          My Enrolled Courses
+        </Typography>
+        <Typography variant="body1" sx={{ textAlign: "center", py: 4 }}>
+          You haven't enrolled in any courses yet.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -40,15 +65,17 @@ const EnrolledCourses = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {enrolledCourses.map((course) => (
-          <Grid item xs={12} sm={6} md={4} key={course.id}>
+        {enrolledCourses.map((course: any) => (
+          <Grid item xs={12} sm={6} md={4} key={course._id}>
             <Card
               sx={{ height: "100%", display: "flex", flexDirection: "column" }}
             >
               <CardMedia
                 component="img"
                 height="180"
-                image={course.thumbnail}
+                image={
+                  course.thumbnail || "https://via.placeholder.com/300x200"
+                }
                 alt={course.title}
               />
               <CardContent sx={{ flexGrow: 1 }}>
@@ -56,22 +83,22 @@ const EnrolledCourses = () => {
                   {course.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mb={2}>
-                  Instructor: {course.instructor}
+                  {course.description?.substring(0, 60)}...
                 </Typography>
-                <Box mb={1}>
+                <Box mb={2}>
                   <Typography variant="body2" color="text.secondary">
-                    Progress: {course.progress}%
+                    Price: ₹{course.price}
                   </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={course.progress}
-                    sx={{ mt: 1 }}
-                  />
                 </Box>
-                <Chip label="Continue Learning" color="primary" size="small" />
+                <Box mb={2}>
+                  <Typography variant="body2" color="text.secondary">
+                    Sections: {course.sections?.length || 0}
+                  </Typography>
+                </Box>
                 <Button
                   variant="contained"
-                  onClick={() => navigate(`/student/course/${course.id}`)}
+                  fullWidth
+                  onClick={() => navigate(`/student/course/${course._id}`)}
                 >
                   Continue Learning
                 </Button>

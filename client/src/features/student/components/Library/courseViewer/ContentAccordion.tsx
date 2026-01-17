@@ -18,10 +18,7 @@ import {
   PictureAsPdf,
   CheckCircle,
 } from "@mui/icons-material";
-import type {
-  CourseSection,
-  Lesson,
-} from "@/features/student/types/course.types";
+import type { CourseSection, Lesson } from "../../../types/course.types";
 
 interface ContentAccordionProps {
   section: CourseSection;
