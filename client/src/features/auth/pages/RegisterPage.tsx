@@ -9,19 +9,26 @@ import {
   Button,
   CircularProgress,
   Link,
+  Alert,
 } from "@mui/material";
 
 const RegisterPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams<{ userRole?: string }>();
-  const role = (params.userRole ?? location.state?.role ?? "student").toLowerCase();
+  const role = (
+    params.userRole ??
+    location.state?.role ??
+    "student"
+  ).toLowerCase();
 
   const [name, setName] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [showReferralBonus, setShowReferralBonus] = useState(true);
 
   // Frontend validation error state
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -33,24 +40,31 @@ const RegisterPage = () => {
 
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match!");
-      return; 
+      return;
     }
 
     setPasswordError(null); // Clear previous error
 
     registerMutation.mutate(
-      { name, email, mobileNo, password, role },
+      {
+        name,
+        email,
+        mobileNo,
+        password,
+        role,
+        referralCode: referralCode || undefined,
+      },
       {
         onSuccess() {
           navigate(
             role === "admin"
               ? "/admin"
               : role === "staff"
-              ? "/staff"
-              : "/student"
+                ? "/staff"
+                : "/student",
           );
         },
-      }
+      },
     );
   };
 
@@ -60,6 +74,17 @@ const RegisterPage = () => {
         <Typography variant="h5" mb={2}>
           Register as {role}
         </Typography>
+
+        {showReferralBonus && (
+          <Alert
+            severity="info"
+            onClose={() => setShowReferralBonus(false)}
+            sx={{ mb: 2 }}
+          >
+            Have a referral code? Get 200 bonus points!
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit}>
           <TextField
             label="Full Name"
@@ -106,6 +131,15 @@ const RegisterPage = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          <TextField
+            label="Referral Code (Optional)"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
+            placeholder="Enter referral code to earn 200 points"
+            helperText="Leave blank if you don't have one"
+          />
           <Button
             variant="contained"
             type="submit"
@@ -120,8 +154,8 @@ const RegisterPage = () => {
           </Button>
           {registerMutation.isError && (
             <Typography color="error" mt={2}>
-              {(loginMutation.error as any)?.response?.data?.message ||
-              (loginMutation.error as any)?.response?.data?.error ||
+              {(registerMutation.error as any)?.response?.data?.message ||
+                (registerMutation.error as any)?.response?.data?.error ||
                 "Registration failed"}
             </Typography>
           )}

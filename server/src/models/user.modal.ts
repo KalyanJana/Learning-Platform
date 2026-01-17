@@ -14,8 +14,12 @@ const userSchema = new Schema<UserType>(
       enum: ["student", "admin", "staff"],
       default: "student",
     },
+    referralCode: { type: String, unique: true, sparse: true },
+    referredByCode: { type: String, default: null },
+    rewardPoints: { type: Number, default: 0 },
+    referralCount: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre<UserType>("save", async function (next) {

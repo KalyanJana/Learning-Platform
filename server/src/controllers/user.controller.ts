@@ -14,7 +14,7 @@ const sendToken = (
   res: Response,
   accessToken: string,
   refreshToken: string,
-  user: any
+  user: any,
 ) => {
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
@@ -26,6 +26,8 @@ const sendToken = (
       email: user.email,
       name: user.name,
       role: user.role,
+      rewardPoints: user.rewardPoints || 0,
+      referralCode: user.referralCode,
     },
   });
 };
@@ -33,7 +35,7 @@ const sendToken = (
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { user, accessToken, refreshToken } = await userService.registerUser(
-      req.body
+      req.body,
     );
     sendToken(res.status(201), accessToken, refreshToken, user);
   } catch (error: any) {
@@ -44,11 +46,10 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { accessToken, refreshToken, user } = await userService.loginUser(
-      req.body
+      req.body,
     );
 
     sendToken(res, accessToken, refreshToken, user);
-
   } catch (error: any) {
     res.status(401).json({ error: error.message });
   }
@@ -60,10 +61,11 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Refresh token missing" });
 
   try {
-    const { newAccessToken, user } = await userService.refreshAccessToken(refreshToken);
-    res.json({ 
-      accessToken: newAccessToken, 
-      user 
+    const { newAccessToken, user } =
+      await userService.refreshAccessToken(refreshToken);
+    res.json({
+      accessToken: newAccessToken,
+      user,
     });
   } catch (error: any) {
     res.status(403).json({ error: error.message });

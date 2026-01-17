@@ -1,5 +1,6 @@
 // src/services/user.service.ts
 import { UserRepository } from "../repositories/user.repositories";
+import { ReferralService } from "./referral.service";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { notifyUserLogout } from "../index";
@@ -17,7 +18,7 @@ if (!JWT_SECRET) {
 const signToken = jwt.sign as unknown as (
   payload: string | object | Buffer,
   secretOrPrivateKey: string | undefined,
-  options?: jwt.SignOptions
+  options?: jwt.SignOptions,
 ) => string;
 
 interface JWTPayload {
@@ -30,17 +31,17 @@ interface JWTPayload {
 
 export class UserService {
   private userRepository: UserRepository;
+  private referralService: ReferralService;
 
   constructor() {
     this.userRepository = new UserRepository();
+    this.referralService = new ReferralService();
   }
 
   async registerUser(
-    userData: UserType
+    userData: UserType & { referralCode?: string },
   ): Promise<{ user: UserType; accessToken: string; refreshToken: string }> {
-    const existingUser = await this.userRepository.findByEmail(
-      userData.email
-    );
+    const existingUser = await this.userRepository.findByEmail(userData.email);
     if (existingUser) {
       throw new Error("Mobile number already in use");
     }
@@ -55,16 +56,42 @@ export class UserService {
       role: userData.role,
     });
 
+    // Generate referral code for new user
+    await this.referralService.createReferralCodeForUser(
+      user._id.toString(),
+      userData.name,
+    );
+
+    // Handle referral code if provided
+    if (userData.referralCode) {
+      await this.referralService.registerWithReferralCode(
+        user._id.toString(),
+        userData.referralCode,
+      );
+    }
+
     const accessToken = signToken(
-      { _id: user._id, email: user.email, name: user.name, mobileNo: user.mobileNo, role: user.role },
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        mobileNo: user.mobileNo,
+        role: user.role,
+      },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: JWT_EXPIRES_IN },
     );
 
     const refreshToken = signToken(
-      { _id: user._id, email: user.email, name: user.name, mobileNo: user.mobileNo, role: user.role },
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        mobileNo: user.mobileNo,
+        role: user.role,
+      },
       JWT_SECRET,
-      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN },
     );
 
     console.log("user", user);
@@ -85,12 +112,12 @@ export class UserService {
     }
 
     notifyUserLogout(user._id.toString()).catch((err) =>
-      console.error("notifyUserLogout error:", err)
+      console.error("notifyUserLogout error:", err),
     );
 
     const passwordMatch = await bcrypt.compare(
       credentials.password,
-      user.password
+      user.password,
     );
 
     if (!passwordMatch) {
@@ -98,27 +125,39 @@ export class UserService {
     }
 
     const accessToken = signToken(
-      { _id: user._id, email: user.email, name: user.name, mobileNo: user.mobileNo, role: user.role },
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        mobileNo: user.mobileNo,
+        role: user.role,
+      },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: JWT_EXPIRES_IN },
     );
 
     const refreshToken = signToken(
-      { _id: user._id, email: user.email, name: user.name, mobileNo: user.mobileNo, role: user.role },
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        mobileNo: user.mobileNo,
+        role: user.role,
+      },
       JWT_SECRET,
-      { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+      { expiresIn: REFRESH_TOKEN_EXPIRES_IN },
     );
     await this.userRepository.addRefreshToken(user._id, refreshToken);
     return { user, accessToken, refreshToken };
   }
 
   async refreshAccessToken(
-    refreshToken: string
+    refreshToken: string,
   ): Promise<{ accessToken: string }> {
     try {
       const decoded = jwt.verify(
         refreshToken,
-        JWT_SECRET
+        JWT_SECRET,
       ) as unknown as JWTPayload;
 
       const user = await this.userRepository.findByUserId(decoded._id);
@@ -127,12 +166,18 @@ export class UserService {
       }
 
       const newAccessToken = signToken(
-        { _id: user._id, email: user.email, mobileNo: user.mobileNo, name: user.name, role: user.role },
+        {
+          _id: user._id,
+          email: user.email,
+          mobileNo: user.mobileNo,
+          name: user.name,
+          role: user.role,
+        },
         JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
+        { expiresIn: JWT_EXPIRES_IN },
       );
 
-      return {newAccessToken, user};
+      return { newAccessToken, user };
     } catch (error) {
       throw new Error("Invalid or expired refresh token");
     }

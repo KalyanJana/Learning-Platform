@@ -8,13 +8,15 @@ export function useLogin() {
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log("data by login", data)
+      console.log("data by login", data);
       setAuth(
         data.accessToken,
         data.user._id,
         data.user.email,
         data.user.name,
-        data.user.role
+        data.user.role,
+        data.user.rewardPoints,
+        data.user.referralCode,
       );
     },
   });
@@ -30,7 +32,9 @@ export function useRegister() {
         data.user._id,
         data.user.email,
         data.user.name,
-        data.user.role
+        data.user.role,
+        data.user.rewardPoints,
+        data.user.referralCode,
       );
     },
   });
@@ -53,13 +57,15 @@ export function useRefreshToken() {
   return useMutation({
     mutationFn: refreshAccessToken,
     onSuccess: (data) => {
-      console.log("data by refreshtoken", data)
+      console.log("data by refreshtoken", data);
       setAuth(
         data.accessToken,
         data.user._id,
         data.user.email,
         data.user.name,
-        data.user.role
+        data.user.role,
+        data.user.rewardPoints,
+        data.user.referralCode,
       );
     },
     onError: (error) => {
