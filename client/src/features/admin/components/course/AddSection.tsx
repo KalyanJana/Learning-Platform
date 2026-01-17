@@ -1,48 +1,62 @@
 // src/pages/AdminSectionForm.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TextField, MenuItem, Button, Typography } from "@mui/material";
-// import apiClient from "../../utils/apiClient";
-// import { useCourseStore } from "../../store/courseStore";
-
-const courses = [
-    {id: '1', title: "React Basic"},
-    {id: '2', title: "Node basic"},
-]
+import {
+  useCreateSection,
+  useFetchCourses,
+} from "../../../../hooks/useCourseHooks";
 
 export default function AddSection() {
-//   const { courses, fetchCourses } = useCourseStore();
   const [courseId, setCourseId] = useState("");
   const [title, setTitle] = useState("");
-  const [result, setResult] = useState<any | null>(null);
-  const [loading, setLoading] = useState(false);
 
+  /* ------------------ FETCH COURSES ------------------ */
+  const {
+    data: courses = [],
+    isLoading: isCoursesLoading,
+    isError: isCoursesError,
+    error: coursesError,
+  } = useFetchCourses();
 
-  const handleAdd = async (e: React.FormEvent) => {
+  /* ------------------ CREATE SECTION MUTATION ------------------ */
+  const {
+    mutate: createSection,
+    isPending: isCreateSectionLoading,
+    isError: isCreateSectionError,
+    error: createSectionError,
+    isSuccess,
+    data: createdSection,
+  } = useCreateSection();
+
+  /* ------------------ SUBMIT HANDLER ------------------ */
+  const handleAddSection = (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!courseId) return;
-    // setLoading(true);
-    // try {
-    //   const res = await apiClient.post(`/courses/v1/${courseId}/sections`, {
-    //     title,
-    //     description,
-    //     order: 0, // You can add order logic here
-    //   });
-    //   setResult(res.data);
-    //   setTitle("");
-    //   setDescription("");
-    //   fetchCourses();
-    // } catch (err: any) {
-    //   setResult({ error: err.message });
-    // }
-    // setLoading(false);
+
+    const payload = {
+      courseId,
+      title,
+    };
+
+    createSection(payload, {
+      onSuccess: () => {
+        setTitle("");
+      },
+    });
   };
 
-//   useEffect(() => {
-//     fetchCourses();
-//   }, []);
+  /* ------------------ UI STATES ------------------ */
+  if (isCoursesLoading) {
+    return <Typography>Loading courses...</Typography>;
+  }
+
+  if (isCoursesError) {
+    return (
+      <Typography color="error">{(coursesError as Error).message}</Typography>
+    );
+  }
 
   return (
-    <form onSubmit={handleAdd}>
+    <form onSubmit={handleAddSection}>
       <Typography variant="h6" mb={2}>
         Add Section
       </Typography>
@@ -61,6 +75,7 @@ export default function AddSection() {
           </MenuItem>
         ))}
       </TextField>
+
       <TextField
         label="Section Title"
         value={title}
@@ -69,12 +84,24 @@ export default function AddSection() {
         required
         sx={{ mb: 2 }}
       />
-      <Button type="submit" variant="contained" disabled={loading || !courseId}>
-        {loading ? "Adding..." : "Add Section"}
+
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={!courseId || !title || isCreateSectionLoading}
+      >
+        {isCreateSectionLoading ? "Adding..." : "Add Section"}
       </Button>
-      {result && (
-        <Typography mt={2} color={result.error ? "error" : "success.main"}>
-          {result.error ? result.error : `Added section: ${result.title}`}
+
+      {isSuccess && (
+        <Typography mt={2} color="success.main">
+          Added section: {createdSection?.title}
+        </Typography>
+      )}
+
+      {isCreateSectionError && (
+        <Typography mt={2} color="error">
+          {(createSectionError as Error).message}
         </Typography>
       )}
     </form>

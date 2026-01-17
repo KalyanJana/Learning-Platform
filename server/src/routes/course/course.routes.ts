@@ -8,7 +8,7 @@ const router = express.Router();
 // Public
 router.get("/", courseController.getAllCourses);
 router.get("/:courseId", courseController.getCourseById);
-router.get("/sections/:courseId", courseController.getSectionsByCourseId);
+router.get(":courseId/sections", courseController.getSectionsByCourseId);
 router.get("/enrolled", authenticateAccessToken, courseController.getEnrolledCourses);
 router.get("/available", authenticateAccessToken, courseController.getAvailableCourses);
 

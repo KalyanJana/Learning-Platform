@@ -6,13 +6,11 @@ export interface Lesson {
   url: string;
   duration?: number; // in seconds for video
   completed: boolean;
-  order: number;
 }
 
 export interface CourseSection {
   id: string;
   title: string;
-  order: number;
   lessons: Lesson[];
 }
 

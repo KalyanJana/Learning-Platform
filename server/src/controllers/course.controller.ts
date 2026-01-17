@@ -6,7 +6,7 @@ import Course from "../models/course.modal";
 // Public endpoints
 export const getAllCourses = async (req: Request, res: Response) => {
   const courses = await CourseService.getAllCourses();
-  console.log("courses", courses)
+  // console.log("courses", courses);
   res.json(courses);
 };
 
@@ -55,41 +55,38 @@ export const createCourse = async (req: Request, res: Response) => {
     const result = await CourseService.createCourse(req.body);
     res.json(result);
   } catch (error: any) {
-    console.error("Cloudinary upload error:", error);
-    res.status(500).json({ error: error.message || "Upload failed" });
+    // console.error("Cloudinary upload error:", error);
+    res
+      .status(500)
+      .json({ error: error.message || "Failed to create new course" });
   }
 };
 
 export const addSection = async (req: Request, res: Response) => {
-  const { courseId } = req.params;
-  const section = await CourseService.addSection(courseId, req.body);
-  res.status(201).json(section);
+   try {
+    const { courseId, title } = req.body;
+    const section = await CourseService.addSection(courseId, { title });
+    res.status(201).json({
+      success: true,
+      data: section,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message || `Failed to add new section`,
+    });
+  }
 };
 
 export const addLesson = async (req: Request, res: Response) => {
-  const { sectionId, courseId } = req.params;
-  // lessonData could include: title, url, type, description, order, uploadedBy ...
-  // For file upload, req.file can be handled via multer and url passed in lessonData!
-  const lesson = await CourseService.addLesson(courseId, sectionId, req.body);
-  res.status(201).json(lesson);
+  try{
+    const { sectionId, courseId } = req.params;
+    console.log("body", req.body)
+    const { title, type, url} = req.body;
+    const lesson = await CourseService.addLesson(courseId, sectionId, { title, type, url });
+    res.status(201).json(lesson);
+  }catch(error){
+    res.status(500).json({ error: error.message || `Failed to add new lesson in course ${courseId} and section ${sectionId}` });
+  }
+  
 };
-
-// export const uploadVideoController = async (req, res) => {
-//   try {
-//     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-//     const {title, description} = req.body;
-
-//     const result = await uploadVideo(req.file.buffer, req.file.originalname.replace(/\.[^.]+$/, ""));
-//     const hlsUrl = getHlsUrl(result.public_id);
-
-//     // Save to DB if needed: { public_id, hlsUrl, ... }
-
-//     res.json({
-//       publicId: result.public_id,
-//       hlsUrl,
-//       message: "Video uploaded and ready for streaming",
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message || "Upload failed" });
-//   }
-// };

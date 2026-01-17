@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import { TextField, Button, Typography, CircularProgress } from "@mui/material";
 import { useCreateCourse } from "../../../../hooks/useCourseHooks";
 
 export default function AddCourse() {
@@ -13,23 +8,31 @@ export default function AddCourse() {
   const [thumbnail, setThumbnail] = useState("");
   const [price, setPrice] = useState("");
 
-
-   /* ✅ Create course mutation */
+  /* ✅ Create course mutation */
   const createCourseMutation = useCreateCourse();
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    createCourseMutation.mutate({
+    const payload = {
       title,
       description,
       thumbnail,
       price: Number(price),
+    };
+    createCourseMutation.mutate(payload, {
+      onSuccess: () => {
+        // reset form
+        setTitle("");
+        setDescription("");
+        setThumbnail("");
+        setPrice("");
+      },
     });
   };
 
   return (
-    <form>
+    <form onSubmit={handleCreate}>
       <Typography variant="h6" mb={2}>
         Create New Course
       </Typography>

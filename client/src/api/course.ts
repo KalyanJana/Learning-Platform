@@ -21,7 +21,7 @@ export const createSectionFn = async (data: {
 }) => {
   const response = await apiClient.post(
     `/courses/v1/${data.courseId}/sections`,
-    { title: data.title }
+    { courseId: data.courseId, title: data.title }
   );
   return response.data;
 };
@@ -37,7 +37,6 @@ export const createLessonFn = async (data: {
     `/courses/v1/${data.courseId}/sections/${data.sectionId}/lessons`,
     {
       title: data.title,
-      content: data.content,
       type: data.type,
       url: data.url,
     }

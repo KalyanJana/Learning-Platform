@@ -1,15 +1,11 @@
 // src/routes/AppRoutes.tsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "../pages/Auth/LoginPage";
-import SignupPage from "../pages/Auth/SignupPage";
-import CoursePage from "../pages/Courses/CoursePage";
-import PurchasePage from "../pages/Courses/PurchasePage";
 import NotFound from "../pages/NotFound";
-import ProtectedRoute from "../context/ProtectedRoute";
+// import ProtectedRoute from "../context/ProtectedRoute";
 import { useAuthStore } from "../store/useAuthStore";
-import CourseDetails from "../pages/Courses/CourseDetails";
-import AdminPanel from "../pages/Admin/AdminPannel";
+// import CourseDetails from "../pages/Courses/CourseDetails";
+// import AdminPanel from "../pages/Admin/AdminPannel";
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/Adminlayout";
 import StudentLayout from "../layouts/StudentLayout";
@@ -76,53 +72,6 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route path="*" element={<NotFound />} />
-
-      {/* <Route
-        path="/"
-        element={
-          isAuthenticated ? <Navigate to="/courses" replace /> : <LoginPage />
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          isAuthenticated ? <Navigate to="/courses" replace /> : <SignupPage />
-        }
-      />
-
-      <Route
-        path="/courses"
-        element={
-          <ProtectedRoute>
-            <CoursePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/courses/:courseId"
-        element={
-          <ProtectedRoute>
-            <CourseDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/courses/:courseId/buy"
-        element={
-          <ProtectedRoute>
-            <PurchasePage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/admin/upload"
-        element={
-          <ProtectedRoute>
-            <AdminPanel />
-          </ProtectedRoute>
-        }
-      /> */}
     </Routes>
   );
 };

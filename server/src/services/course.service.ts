@@ -31,42 +31,18 @@ export const CourseService = {
     });
     return course;
   },
-  // async createCourse(
-  //   body: { title: string; description?: string; price: number; discount?: number },
-  //   file: Express.Multer.File
-  // ) {
-  //   console.log("service layer")
-  //   const buffer = file.buffer;
-  //   const filename = file.originalname.replace(/\.[^/.]+$/, "");
-  //   console.log("file", file)
-  //   // Determine resource type (image, video, raw)
-  //   let resourceType: "image" | "video" | "raw" = "image";
-  //   if (file.mimetype.startsWith("video")) resourceType = "video";
-  //   else if (file.mimetype === "application/pdf") resourceType = "raw";
-
-  //   // Call repo method
-  //   console.log("resourseType", resourceType)
-  //   const { public_id } = await uploadFileToCloudinaryRepo(buffer, filename, resourceType, "learningPlatform");
-  //   console.log("bannerUrl", public_id);
-  //   // Save course in database
-  //   const course = await CourseRepository.createCourseInDb({
-  //     title: body.title,
-  //     description: body.description,
-  //     price: body.price,
-  //     discount: body.discount,
-  //     bannerUrl: public_id,
-  //   });
-  //   return course;
-  // }
-
-  async addSection(courseId: string, sectionData: any) {
+   async addSection(courseId: string, sectionData: { title: string }) {
+    console.log("Adding section to course:", courseId);
     const section = await SectionRepository.create({
       ...sectionData,
       course: courseId,
     });
-    await SectionRepository.addToCourse(courseId, section._id);
+    console.log("Created section:", section);
+    // Add section to course's sections array
+    await CourseRepository.addSectionToCourse(courseId, section._id);
+    console.log("Added section to course:", courseId);
     return section;
-  },
+  }
 
   async getSectionsByCourseId(courseId: string) {
     if (!Types.ObjectId.isValid(courseId)) {
@@ -76,12 +52,15 @@ export const CourseService = {
     return sections;
   },
 
-  async addLesson(courseId: string, sectionId: string, lessonData: any) {
+  async addLesson(courseId: string, sectionId: string, lessonData: { title: string, type: string, url: string }) {
+    console.log("Adding lesson to course:", courseId, "section:", sectionId);
     const lesson = await LessonRepository.create({
       ...lessonData,
       section: sectionId,
     });
-    await LessonRepository.addToSection(sectionId, lesson._id);
+    console.log("Created lesson:", lesson);
+    await LessonRepository.addLessonToSection(sectionId, lesson._id);
+    console.log("Added lesson to section:", sectionId);
     return lesson;
   },
 };

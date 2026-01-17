@@ -39,7 +39,6 @@ const CourseViewerPage = () => {
         {
           id: "s1",
           title: "Introduction to React",
-          order: 1,
           lessons: [
             {
               id: "c1",
@@ -48,7 +47,6 @@ const CourseViewerPage = () => {
               url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
               duration: 300,
               completed: false,
-              order: 1,
             },
             {
               id: "c2",
@@ -56,14 +54,12 @@ const CourseViewerPage = () => {
               type: "pdf",
               url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
               completed: false,
-              order: 2,
             },
           ],
         },
         {
           id: "s2",
           title: "Components and Props",
-          order: 2,
           lessons: [
             {
               id: "c3",
@@ -72,7 +68,6 @@ const CourseViewerPage = () => {
               url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
               duration: 400,
               completed: false,
-              order: 1,
             },
           ],
         },
