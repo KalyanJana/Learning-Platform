@@ -41,14 +41,15 @@ interface AdminFormData {
 }
 
 interface CreateAdminResponse {
-  success: boolean;
-  message: string;
-  data?: {
+  accessToken: string;
+  user: {
     _id: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
+    name?: string;
     email: string;
     role: string;
+    mobileNo?: string;
   };
 }
 
@@ -145,10 +146,9 @@ const AdminAccountCreate = () => {
 
     try {
       const response = await apiClient.post<CreateAdminResponse>(
-        "/v1/auth/create-admin",
+        "/users/auth/register",
         {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+          name: formData.firstName + " " + formData.lastName,
           email: formData.email,
           mobileNo: formData.mobileNo,
           password: formData.password,
@@ -156,10 +156,29 @@ const AdminAccountCreate = () => {
         },
       );
 
-      if (response.data.success) {
-        setSuccessData(response.data.data || null);
+      // Handle successful response
+      if (response.status === 200 || response.status === 201) {
+        const responseData = response.data;
+
+        // Extract user data from response
+        const userData = response.data.user;
+
+        // Format the user data for display
+        const displayData = {
+          _id: userData._id,
+          firstName: userData.name?.split(" ")[0] || userData.firstName || "",
+          lastName: userData.name?.split(" ")[1] || userData.lastName || "",
+          email: userData.email,
+          role: userData.role,
+        };
+
+        setSuccessData(displayData);
         setSuccessDialog(true);
         resetForm();
+        setMessage({
+          type: "success",
+          text: "Admin account created successfully!",
+        });
       } else {
         setMessage({
           type: "error",
@@ -167,8 +186,10 @@ const AdminAccountCreate = () => {
         });
       }
     } catch (error: any) {
+      console.error("Admin creation error:", error);
       const errorMessage =
         error.response?.data?.message ||
+        error.response?.data?.error ||
         error.message ||
         "Failed to create admin account";
       setMessage({

@@ -150,7 +150,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </List>
         </Collapse>
 
-        <ListItem disablePadding>
+        {/* account confirmation section  */}
+        {/* <ListItem disablePadding>
           <ListItemButton onClick={() => toggleSection("account")}>
             <ListItemIcon>
               <LibraryBooks />
@@ -184,7 +185,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <ListItemText primary="Student Account Confirmation" />
             </ListItemButton>
           </List>
-        </Collapse>
+        </Collapse> */}
 
         {/* Commission section */}
         <ListItem disablePadding>
