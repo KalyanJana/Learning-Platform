@@ -16,7 +16,7 @@ export interface RegisterPayload {
 }
 
 export const login = async (data: LoginPayload) => {
-  const res = await apiClient.post("/users/v1/auth/login", data);
+  const res = await apiClient.post("/users/auth/login", data);
   return res.data;
 };
 
@@ -26,15 +26,14 @@ export const register = (data: RegisterPayload) => {
   // if (data.password !== data.confirmPassword) {
   //   return Promise.reject(new Error("Passwords do not match!"));
   // }
-  return apiClient.post("users/v1/auth/register", data).then((res) => res.data);
+  return apiClient.post("/users/auth/register", data).then((res) => res.data);
 };
 
 export const logout = () =>
-  apiClient.post("/users/v1/logout").then((res) => res.data);
-
+  apiClient.post("/users/logout").then((res) => res.data);
 export const refreshAccessToken = async () => {
   // Request new access token (refresh token is sent via HttpOnly cookie)
-  const response = await apiClient.post("users/v1/token/refresh");
+  const response = await apiClient.post("/users/token/refresh");
   // Fetch latest profile with the new token already set via interceptor/cookie
   // const userResponse = await apiClient.get('users/v1/profile');
   // return {

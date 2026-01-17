@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
 
       refreshing = true;
       try {
-        const { data } = await apiClient.post("/users/v1/token/refresh");
+        const { data } = await apiClient.post("/users/token/refresh");
 
         const newAccessToken = data.accessToken;
         const { _id, email, name, role } = data.user;

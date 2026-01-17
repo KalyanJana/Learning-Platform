@@ -1,12 +1,8 @@
-import express from 'express';
-import userRouters from './user';
-import paymentRoutes from './payment';
-import courseRouters from './course';
+import express from "express";
+import v1Routes from "./v1";
 
 const router = express.Router();
 
-router.use("/users", userRouters);
-router.use("/payment", paymentRoutes);
-router.use("/courses", courseRouters);
+router.use("/v1", v1Routes)
 
 export default router;

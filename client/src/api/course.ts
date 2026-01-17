@@ -1,7 +1,7 @@
 import apiClient from "../utils/apiClient";
 
 export const fetchCoursesFn = async () => {
-  const response = await apiClient.get("/courses/v1");
+  const response = await apiClient.get("/courses");
   return response.data;
 };
 
@@ -11,7 +11,7 @@ export const createCourseFn = async (data: {
   thumbnail: string;
   price: number;
 }) => {
-  const response = await apiClient.post("/courses/v1", data);
+  const response = await apiClient.post("/courses", data);
   return response.data;
 };
 
@@ -20,7 +20,7 @@ export const createSectionFn = async (data: {
   title: string;
 }) => {
   const response = await apiClient.post(
-    `/courses/v1/${data.courseId}/sections`,
+    `/courses/${data.courseId}/sections`,
     { courseId: data.courseId, title: data.title }
   );
   return response.data;
@@ -34,7 +34,7 @@ export const createLessonFn = async (data: {
   url: string;
 }) => {
   const response = await apiClient.post(
-    `/courses/v1/${data.courseId}/sections/${data.sectionId}/lessons`,
+    `/courses/${data.courseId}/sections/${data.sectionId}/lessons`,
     {
       title: data.title,
       type: data.type,

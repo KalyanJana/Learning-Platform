@@ -5,9 +5,12 @@ import {
   logoutUser,
   getUserProfile,
   refreshAccessToken,
-} from "../../controllers/user.controller";
+} from "../../../controllers/user.controller";
 
-import { authenticateAccessToken, authenticateRefreshToken } from "../../middlewares/auth.middleware";
+import {
+  authenticateAccessToken,
+  authenticateRefreshToken,
+} from "../../../middlewares/auth.middleware";
 
 const router = Router();
 
